@@ -1,0 +1,32 @@
+# Python cache & environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Timestamped run artifact CSVs (keep canonical baseline files and .gitkeep)
+results/*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9].csv
+!results/.gitkeep
+!results/all-pods-summary.csv
+!results/experiment-1-results.csv
+!results/experiment-2-results.csv
+!results/kubernetes-events.csv
+
+# Temporary files
+*.tmp
+*.bak
+*.log

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: priority-scheduling
+  labels:
+    project: priority-based-pod-scheduling
+    environment: academic-demonstration

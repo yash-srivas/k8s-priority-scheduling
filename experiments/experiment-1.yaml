@@ -1,0 +1,292 @@
+# Experiment 1: Multi-Tier Microservice Priority Scheduling (12 Workload Pods)
+# -----------------------------------------------------------------------------
+# Tier 1: High Priority (100,000) - Mission Critical Core Services
+apiVersion: v1
+kind: Pod
+metadata:
+  name: auth-service-core
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: auth
+    tier: high
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[CORE] Auth Service Online'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "300m"
+        memory: "128Mi"
+      limits:
+        cpu: "600m"
+        memory: "256Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: payment-gateway-api
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: payment
+    tier: high
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[CORE] Payment Gateway Active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "400m"
+        memory: "128Mi"
+      limits:
+        cpu: "800m"
+        memory: "256Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: order-processing-service
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: orders
+    tier: high
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[CORE] Order Engine Active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "350m"
+        memory: "128Mi"
+      limits:
+        cpu: "700m"
+        memory: "256Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emergency-telemetry-engine
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: telemetry
+    tier: high
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[CORE] Telemetry Engine Online'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
+---
+# Tier 2: Medium Priority (50,000) - Standard Customer Services
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-web-ui-1
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: frontend
+    tier: medium
+spec:
+  priorityClassName: medium-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[APP] Frontend UI 1 Active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend-web-ui-2
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: frontend
+    tier: medium
+spec:
+  priorityClassName: medium-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[APP] Frontend UI 2 Active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: inventory-service
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: inventory
+    tier: medium
+spec:
+  priorityClassName: medium-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[APP] Inventory API Active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "64Mi"
+      limits:
+        cpu: "500m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notification-dispatcher
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: notifications
+    tier: medium
+spec:
+  priorityClassName: medium-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[APP] Notification Worker Active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+# Tier 3: Low Priority (10,000) - Background Batch & ETL Jobs
+apiVersion: v1
+kind: Pod
+metadata:
+  name: analytics-etl-worker-1
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: analytics
+    tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[BATCH] Analytics Worker 1 Running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: analytics-etl-worker-2
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: analytics
+    tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[BATCH] Analytics Worker 2 Running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nightly-db-backup
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: backup
+    tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[BATCH] Database Backup Running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-compression-job
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-1
+    service: logs
+    tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: service
+    image: busybox:1.36
+    command: ["sh", "-c", "echo '[BATCH] Log Archiver Running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"

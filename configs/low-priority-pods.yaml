@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: low-priority-worker-1
+  namespace: priority-scheduling
+  labels:
+    app: batch-worker
+    tier: background
+    priority-tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: worker
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Low-priority worker 1 active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: low-priority-worker-2
+  namespace: priority-scheduling
+  labels:
+    app: batch-worker
+    tier: background
+    priority-tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: worker
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Low-priority worker 2 active'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "64Mi"
+      limits:
+        cpu: "400m"
+        memory: "128Mi"

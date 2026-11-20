@@ -1,0 +1,74 @@
+# Experiment 2: Priority-Based Preemption Demonstration
+# Part 1: Lower-priority pods configured to consume node allocatable CPU
+apiVersion: v1
+kind: Pod
+metadata:
+  name: victim-low-pod-1
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-2
+    role: victim
+    tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: victim-worker
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Victim Pod 1 running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "600m"
+        memory: "256Mi"
+      limits:
+        cpu: "800m"
+        memory: "512Mi"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: victim-low-pod-2
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-2
+    role: victim
+    tier: low
+spec:
+  priorityClassName: low-priority
+  restartPolicy: Never
+  containers:
+  - name: victim-worker
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'Victim Pod 2 running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "600m"
+        memory: "256Mi"
+      limits:
+        cpu: "800m"
+        memory: "512Mi"
+---
+# Part 2: High-priority preemptor pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: preemptor-high-pod
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-2
+    role: preemptor
+    tier: high
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+  - name: critical-worker
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'High-priority preemptor running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "900m"
+        memory: "256Mi"
+      limits:
+        cpu: "1200m"
+        memory: "512Mi"

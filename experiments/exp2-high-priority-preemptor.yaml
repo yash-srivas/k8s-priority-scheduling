@@ -1,0 +1,23 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  name: preemptor-high-pod
+  namespace: priority-scheduling
+  labels:
+    experiment: experiment-2
+    role: preemptor
+    tier: high
+spec:
+  priorityClassName: high-priority
+  restartPolicy: Never
+  containers:
+  - name: critical-worker
+    image: busybox:1.36
+    command: ["sh", "-c", "echo 'High-priority preemptor running'; sleep 7200"]
+    resources:
+      requests:
+        cpu: "2002m"
+        memory: "256Mi"
+      limits:
+        cpu: "2602m"
+        memory: "512Mi"
