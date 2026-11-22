@@ -1255,6 +1255,76 @@ body.neobrutal-body {
     color: #94a3b8;
 }
 
+.lab-details {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: var(--nb-border-thin);
+    background: var(--nb-white);
+}
+.lab-details summary {
+    cursor: pointer;
+    font-weight: 800;
+}
+.lab-details p,
+.lab-details ol,
+.lab-details ul {
+    margin: 8px 0;
+}
+.lab-details ol,
+.lab-details ul {
+    padding-left: 24px;
+}
+.audit-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.audit-control select {
+    border: var(--nb-border-thin);
+    background: var(--nb-white);
+    padding: 5px 8px;
+    max-width: 100%;
+}
+.audit-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0;
+}
+#auditOverview h3, #auditComparison h3, #auditOverview p, #auditComparison p {
+    margin: 12px 0 8px;
+}
+.audit-table th {
+    white-space: normal;
+}
+.audit-table td {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+.audit-uid {
+    display: block;
+    overflow-wrap: anywhere;
+}
+.audit-code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 380px;
+    overflow: auto;
+    padding: 8px;
+}
+#auditComparison {
+    scroll-margin-top: 115px;
+}
+.placement-detail {
+    margin-top: 5px;
+    font-size: 0.75rem;
+}
+.pod-reason {
+    margin-top: 8px;
+    min-width: 180px;
+    font-size: 0.78rem;
+}
+
 /* ==============================================================================
    RESPONSIVENESS
    ============================================================================== */

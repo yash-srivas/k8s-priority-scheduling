@@ -1,0 +1,220 @@
+﻿{
+    "experiment":  "experiment-2",
+    "context":  "kind-kind",
+    "status":  "FAIL",
+    "message":  "The equal-priority probe stayed Pending under the same CPU shortfall. Both high Pods encountered Insufficient cpu, then ran on their planned workers. Scheduler events and actual Pod states confirm low-priority preemption on both workers. Both medium Pods are still Running. Evidence collection failed: Cannot convert the \"System.Object[]\" value of type \"System.Object[]\" to type \"System.DateTimeOffset\".",
+    "recorded_at":  "2026-11-22T05:45:14.8962918Z",
+    "details":  {
+                    "workers":  [
+                                    {
+                                        "node":  "kind-worker",
+                                        "hostname":  "kind-worker",
+                                        "medium":  "customer-portal-api",
+                                        "low":  [
+                                                    "batch-analytics-worker-1",
+                                                    "video-transcoder-node-1",
+                                                    "data-crawler-job-1"
+                                                ],
+                                        "high":  "emergency-payment-surge",
+                                        "cpuAllocatableMilli":  16000,
+                                        "memoryAllocatableBytes":  8130285568,
+                                        "initialRequestedCpuMilli":  100,
+                                        "initialRequestedMemoryBytes":  52428800,
+                                        "mediumCpuMilli":  1590,
+                                        "lowCpuMilli":  3975,
+                                        "freeCpuBeforeHighMilli":  2385,
+                                        "freeMemoryBeforeHighBytes":  7943639040,
+                                        "highCpuMilli":  4373,
+                                        "before":  {
+                                                       "node":  "kind-worker",
+                                                       "allocatableCpuMilli":  16000,
+                                                       "requestedCpuMilli":  13615,
+                                                       "freeCpuMilli":  2385,
+                                                       "allocatableMemoryBytes":  8130285568,
+                                                       "requestedMemoryBytes":  186646528,
+                                                       "freeMemoryBytes":  7943639040,
+                                                       "freePodSlots":  104
+                                                   },
+                                        "after":  {
+                                                      "node":  "kind-worker",
+                                                      "allocatableCpuMilli":  16000,
+                                                      "requestedCpuMilli":  14013,
+                                                      "freeCpuMilli":  1987,
+                                                      "allocatableMemoryBytes":  8130285568,
+                                                      "requestedMemoryBytes":  220200960,
+                                                      "freeMemoryBytes":  7910084608,
+                                                      "freePodSlots":  104
+                                                  },
+                                        "baselineAllocations":  [
+                                                                    "2efec2d5-8365-4f3e-8efc-7b86c572d206/1.590/33554432",
+                                                                    "76559e27-968b-4a94-9704-3313938eb1b2/3.975/33554432",
+                                                                    "76bc26e3-d7b0-4acf-84c9-39443a4115a4/3.975/33554432",
+                                                                    "77655fd1-600d-44c4-a417-cd8c35711f03/0.100/52428800",
+                                                                    "a3e99ee6-1029-4631-a86e-59d118f7a317/0/0",
+                                                                    "d26a6e35-9fc9-4550-82ab-4d847e675108/3.975/33554432"
+                                                                ],
+                                        "releasedVictims":  [
+                                                                {
+                                                                    "uid":  "d26a6e35-9fc9-4550-82ab-4d847e675108",
+                                                                    "name":  [
+                                                                                 "inventory-query-service",
+                                                                                 "batch-analytics-worker-1",
+                                                                                 "batch-analytics-worker-2",
+                                                                                 "video-transcoder-node-1",
+                                                                                 "customer-portal-api",
+                                                                                 "data-crawler-job-1",
+                                                                                 "video-transcoder-node-2"
+                                                                             ],
+                                                                    "node":  "kind-worker",
+                                                                    "cpuMilli":  27029,
+                                                                    "memoryBytes":  234881024
+                                                                },
+                                                                {
+                                                                    "uid":  "85c91d4b-0754-439c-aec3-608fbf902b60",
+                                                                    "name":  [
+                                                                                 "inventory-query-service",
+                                                                                 "batch-analytics-worker-1",
+                                                                                 "batch-analytics-worker-2",
+                                                                                 "video-transcoder-node-1",
+                                                                                 "customer-portal-api",
+                                                                                 "data-crawler-job-1",
+                                                                                 "video-transcoder-node-2"
+                                                                             ],
+                                                                    "node":  "kind-worker",
+                                                                    "cpuMilli":  27029,
+                                                                    "memoryBytes":  234881024
+                                                                }
+                                                            ],
+                                        "requestedCpuAfterMilli":  14013,
+                                        "freeCpuAfterMilli":  1987
+                                    },
+                                    {
+                                        "node":  "kind-worker2",
+                                        "hostname":  "kind-worker2",
+                                        "medium":  "inventory-query-service",
+                                        "low":  [
+                                                    "batch-analytics-worker-2",
+                                                    "video-transcoder-node-2"
+                                                ],
+                                        "high":  "critical-order-surge",
+                                        "cpuAllocatableMilli":  16000,
+                                        "memoryAllocatableBytes":  8130285568,
+                                        "initialRequestedCpuMilli":  100,
+                                        "initialRequestedMemoryBytes":  52428800,
+                                        "mediumCpuMilli":  1590,
+                                        "lowCpuMilli":  5962,
+                                        "freeCpuBeforeHighMilli":  2386,
+                                        "freeMemoryBeforeHighBytes":  7977193472,
+                                        "highCpuMilli":  5367,
+                                        "before":  {
+                                                       "node":  "kind-worker2",
+                                                       "allocatableCpuMilli":  16000,
+                                                       "requestedCpuMilli":  13614,
+                                                       "freeCpuMilli":  2386,
+                                                       "allocatableMemoryBytes":  8130285568,
+                                                       "requestedMemoryBytes":  153092096,
+                                                       "freeMemoryBytes":  7977193472,
+                                                       "freePodSlots":  105
+                                                   },
+                                        "after":  {
+                                                      "node":  "kind-worker2",
+                                                      "allocatableCpuMilli":  16000,
+                                                      "requestedCpuMilli":  13019,
+                                                      "freeCpuMilli":  2981,
+                                                      "allocatableMemoryBytes":  8130285568,
+                                                      "requestedMemoryBytes":  186646528,
+                                                      "freeMemoryBytes":  7943639040,
+                                                      "freePodSlots":  105
+                                                  },
+                                        "baselineAllocations":  [
+                                                                    "238ed9e3-ebc5-45e8-8950-eb5d92c9b8a3/1.590/33554432",
+                                                                    "85c91d4b-0754-439c-aec3-608fbf902b60/5.962/33554432",
+                                                                    "89d8f4c6-c2c5-498d-b078-59bef0c30920/0/0",
+                                                                    "96a1af8d-9297-4d3a-ab80-c61949b6072e/0.100/52428800",
+                                                                    "ebfe48db-dba4-40dd-99ff-314de2d3385b/5.962/33554432"
+                                                                ],
+                                        "releasedVictims":  [
+                                                                {
+                                                                    "uid":  "d26a6e35-9fc9-4550-82ab-4d847e675108",
+                                                                    "name":  [
+                                                                                 "inventory-query-service",
+                                                                                 "batch-analytics-worker-1",
+                                                                                 "batch-analytics-worker-2",
+                                                                                 "video-transcoder-node-1",
+                                                                                 "customer-portal-api",
+                                                                                 "data-crawler-job-1",
+                                                                                 "video-transcoder-node-2"
+                                                                             ],
+                                                                    "node":  "kind-worker2",
+                                                                    "cpuMilli":  27029,
+                                                                    "memoryBytes":  234881024
+                                                                },
+                                                                {
+                                                                    "uid":  "85c91d4b-0754-439c-aec3-608fbf902b60",
+                                                                    "name":  [
+                                                                                 "inventory-query-service",
+                                                                                 "batch-analytics-worker-1",
+                                                                                 "batch-analytics-worker-2",
+                                                                                 "video-transcoder-node-1",
+                                                                                 "customer-portal-api",
+                                                                                 "data-crawler-job-1",
+                                                                                 "video-transcoder-node-2"
+                                                                             ],
+                                                                    "node":  "kind-worker2",
+                                                                    "cpuMilli":  27029,
+                                                                    "memoryBytes":  234881024
+                                                                }
+                                                            ],
+                                        "requestedCpuAfterMilli":  13019,
+                                        "freeCpuAfterMilli":  2981
+                                    }
+                                ],
+                    "runId":  "20261122-054136-4921706-554e53ce",
+                    "confirmedVictimUids":  [
+                                                "d26a6e35-9fc9-4550-82ab-4d847e675108",
+                                                "85c91d4b-0754-439c-aec3-608fbf902b60"
+                                            ],
+                    "cpuSchedulingFailures":  {
+                                                  "4a89c7bb-dd6e-40aa-9d31-da654834640c":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: not eligible due to a terminating pod on the nominated node.",
+                                                  "e3b922ba-444a-4e68-8902-431873db4dee":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: found a potential placement for pod on node kind-worker, preempting 1 victims"
+                                              },
+                    "baselinePodUids":  {
+                                            "batch-analytics-worker-1":  "76bc26e3-d7b0-4acf-84c9-39443a4115a4",
+                                            "batch-analytics-worker-2":  "ebfe48db-dba4-40dd-99ff-314de2d3385b",
+                                            "video-transcoder-node-1":  "d26a6e35-9fc9-4550-82ab-4d847e675108",
+                                            "data-crawler-job-1":  "76559e27-968b-4a94-9704-3313938eb1b2",
+                                            "inventory-query-service":  "238ed9e3-ebc5-45e8-8950-eb5d92c9b8a3",
+                                            "video-transcoder-node-2":  "85c91d4b-0754-439c-aec3-608fbf902b60",
+                                            "customer-portal-api":  "2efec2d5-8365-4f3e-8efc-7b86c572d206"
+                                        },
+                    "priorityComparison":  {
+                                               "freeCpuMilli":  2385,
+                                               "equalPod":  "equal-priority-payment-probe",
+                                               "equalPriority":  10000,
+                                               "highPod":  "emergency-payment-surge",
+                                               "highPhase":  "Running",
+                                               "equalUid":  "dd1ccf6a-3248-4e14-bec4-07c57e5bfd60",
+                                               "failureEventUid":  "a5b3769f-f364-4118-ba7f-5c89aae80a5a",
+                                               "node":  "kind-worker",
+                                               "failure":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: 0/3 nodes are available: 1 No preemption victims found for incoming pod, 2 Preemption is not helpful for scheduling.",
+                                               "highUid":  "e3b922ba-444a-4e68-8902-431873db4dee",
+                                               "incomingCpuMilli":  4373,
+                                               "comparableBaseline":  true,
+                                               "incomingMemory":  "64Mi",
+                                               "highPriority":  100000,
+                                               "equalPhase":  "Pending"
+                                           },
+                    "cpuFailureEventUids":  {
+                                                "4a89c7bb-dd6e-40aa-9d31-da654834640c":  "710ad182-d802-4d2c-ae96-84dfee494c20",
+                                                "e3b922ba-444a-4e68-8902-431873db4dee":  "7443b0d2-7777-42c4-afa6-41bb5669f487"
+                                            },
+                    "highPodUids":  {
+                                        "emergency-payment-surge":  "e3b922ba-444a-4e68-8902-431873db4dee",
+                                        "critical-order-surge":  "4a89c7bb-dd6e-40aa-9d31-da654834640c"
+                                    },
+                    "observedNominations":  {
+                                                "4a89c7bb-dd6e-40aa-9d31-da654834640c":  "kind-worker2",
+                                                "e3b922ba-444a-4e68-8902-431873db4dee":  "kind-worker"
+                                            }
+                }
+}

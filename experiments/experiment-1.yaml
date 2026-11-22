@@ -8,9 +8,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: auth
     tier: high
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: high-priority
   restartPolicy: Never
   containers:
@@ -32,9 +40,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: payment
     tier: high
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: high-priority
   restartPolicy: Never
   containers:
@@ -56,9 +72,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: orders
     tier: high
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: high-priority
   restartPolicy: Never
   containers:
@@ -80,9 +104,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: telemetry
     tier: high
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: high-priority
   restartPolicy: Never
   containers:
@@ -105,9 +137,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: frontend
     tier: medium
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: medium-priority
   restartPolicy: Never
   containers:
@@ -129,9 +169,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: frontend
     tier: medium
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: medium-priority
   restartPolicy: Never
   containers:
@@ -153,9 +201,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: inventory
     tier: medium
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: medium-priority
   restartPolicy: Never
   containers:
@@ -177,9 +233,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: notifications
     tier: medium
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: medium-priority
   restartPolicy: Never
   containers:
@@ -202,9 +266,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: analytics
     tier: low
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: low-priority
   restartPolicy: Never
   containers:
@@ -226,9 +298,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: analytics
     tier: low
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: low-priority
   restartPolicy: Never
   containers:
@@ -250,9 +330,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: backup
     tier: low
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: low-priority
   restartPolicy: Never
   containers:
@@ -274,9 +362,17 @@ metadata:
   namespace: priority-scheduling
   labels:
     experiment: experiment-1
+    app.kubernetes.io/managed-by: priority-scheduling-lab
     service: logs
     tier: low
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   priorityClassName: low-priority
   restartPolicy: Never
   containers:

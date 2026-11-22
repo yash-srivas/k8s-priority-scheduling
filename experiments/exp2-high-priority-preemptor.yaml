@@ -1,10 +1,12 @@
-﻿apiVersion: v1
+# Optional static sample for inspecting Pod PriorityClass references.
+# Use scripts/run-experiment-2.ps1 for capacity-calibrated preemption on both workers.
+apiVersion: v1
 kind: Pod
 metadata:
   name: preemptor-high-pod
   namespace: priority-scheduling
   labels:
-    experiment: experiment-2
+    experiment: manual-priority-sample
     role: preemptor
     tier: high
 spec:
@@ -16,8 +18,8 @@ spec:
     command: ["sh", "-c", "echo 'High-priority preemptor running'; sleep 7200"]
     resources:
       requests:
-        cpu: "2002m"
-        memory: "256Mi"
+        cpu: "100m"
+        memory: "64Mi"
       limits:
-        cpu: "2602m"
-        memory: "512Mi"
+        cpu: "100m"
+        memory: "64Mi"

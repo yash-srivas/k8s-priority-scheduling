@@ -1,0 +1,23 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: order-high-priority
+  labels:
+    app.kubernetes.io/managed-by: priority-scheduling-lab
+    experiment: scheduling-order
+value: 100000
+globalDefault: false
+preemptionPolicy: Never
+description: "High-priority contestant for the scheduling-order demonstration."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: order-low-priority
+  labels:
+    app.kubernetes.io/managed-by: priority-scheduling-lab
+    experiment: scheduling-order
+value: 10000
+globalDefault: false
+preemptionPolicy: Never
+description: "Low-priority contestant for the scheduling-order demonstration."

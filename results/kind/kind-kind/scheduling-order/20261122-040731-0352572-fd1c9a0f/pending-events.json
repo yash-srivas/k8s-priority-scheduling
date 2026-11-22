@@ -1,0 +1,194 @@
+[
+    {
+        "apiVersion":  "v1",
+        "count":  1,
+        "eventTime":  null,
+        "firstTimestamp":  "2026-11-22T04:07:33Z",
+        "involvedObject":  {
+                               "apiVersion":  "v1",
+                               "fieldPath":  "spec.containers{workload}",
+                               "kind":  "Pod",
+                               "name":  "order-capacity-blocker",
+                               "namespace":  "priority-scheduling",
+                               "resourceVersion":  "204104",
+                               "uid":  "7b644ece-6c36-444d-9789-abf8670346ff"
+                           },
+        "kind":  "Event",
+        "lastTimestamp":  "2026-11-22T04:07:33Z",
+        "message":  "Container created",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T04:07:33Z",
+                         "name":  "order-capacity-blocker.18ea4270de5d348e",
+                         "namespace":  "priority-scheduling",
+                         "resourceVersion":  "204109",
+                         "uid":  "e6ea7e16-5a04-42fa-a609-abfabb76fe0f"
+                     },
+        "reason":  "Created",
+        "reportingComponent":  "kubelet",
+        "reportingInstance":  "kind-worker",
+        "source":  {
+                       "component":  "kubelet",
+                       "host":  "kind-worker"
+                   },
+        "type":  "Normal"
+    },
+    {
+        "apiVersion":  "v1",
+        "count":  1,
+        "eventTime":  null,
+        "firstTimestamp":  "2026-11-22T04:07:33Z",
+        "involvedObject":  {
+                               "apiVersion":  "v1",
+                               "fieldPath":  "spec.containers{workload}",
+                               "kind":  "Pod",
+                               "name":  "order-capacity-blocker",
+                               "namespace":  "priority-scheduling",
+                               "resourceVersion":  "204104",
+                               "uid":  "7b644ece-6c36-444d-9789-abf8670346ff"
+                           },
+        "kind":  "Event",
+        "lastTimestamp":  "2026-11-22T04:07:33Z",
+        "message":  "Container image \"busybox:1.36\" already present on machine and can be accessed by the pod",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T04:07:33Z",
+                         "name":  "order-capacity-blocker.18ea4270dc3ab53e",
+                         "namespace":  "priority-scheduling",
+                         "resourceVersion":  "204108",
+                         "uid":  "a2e882af-6204-4133-b645-1e13064b6547"
+                     },
+        "reason":  "Pulled",
+        "reportingComponent":  "kubelet",
+        "reportingInstance":  "kind-worker",
+        "source":  {
+                       "component":  "kubelet",
+                       "host":  "kind-worker"
+                   },
+        "type":  "Normal"
+    },
+    {
+        "action":  "Binding",
+        "apiVersion":  "v1",
+        "eventTime":  "2026-11-22T04:07:33.447276Z",
+        "firstTimestamp":  null,
+        "involvedObject":  {
+                               "apiVersion":  "v1",
+                               "kind":  "Pod",
+                               "name":  "order-capacity-blocker",
+                               "namespace":  "priority-scheduling",
+                               "resourceVersion":  "204103",
+                               "uid":  "7b644ece-6c36-444d-9789-abf8670346ff"
+                           },
+        "kind":  "Event",
+        "lastTimestamp":  null,
+        "message":  "Successfully assigned priority-scheduling/order-capacity-blocker to kind-worker",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T04:07:33Z",
+                         "name":  "order-capacity-blocker.18ea4270bdb9114c",
+                         "namespace":  "priority-scheduling",
+                         "resourceVersion":  "204105",
+                         "uid":  "058d7d8c-0d07-4e24-a53e-dba0dadd2caf"
+                     },
+        "reason":  "Scheduled",
+        "reportingComponent":  "default-scheduler",
+        "reportingInstance":  "default-scheduler-kind-control-plane",
+        "source":  {
+
+                   },
+        "type":  "Normal"
+    },
+    {
+        "action":  "Scheduling",
+        "apiVersion":  "v1",
+        "eventTime":  "2026-11-22T04:07:34.383142Z",
+        "firstTimestamp":  null,
+        "involvedObject":  {
+                               "apiVersion":  "v1",
+                               "kind":  "Pod",
+                               "name":  "order-low-contestant",
+                               "namespace":  "priority-scheduling",
+                               "resourceVersion":  "204112",
+                               "uid":  "a77615e5-f212-40d4-9aaf-6c5923e9005c"
+                           },
+        "kind":  "Event",
+        "lastTimestamp":  null,
+        "message":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: not eligible due to preemptionPolicy=Never.",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T04:07:34Z",
+                         "name":  "order-low-contestant.18ea4270f5802d0a",
+                         "namespace":  "priority-scheduling",
+                         "resourceVersion":  "204113",
+                         "uid":  "60e63123-1c94-48ea-9f59-44bf98acf30f"
+                     },
+        "reason":  "FailedScheduling",
+        "reportingComponent":  "default-scheduler",
+        "reportingInstance":  "default-scheduler-kind-control-plane",
+        "source":  {
+
+                   },
+        "type":  "Warning"
+    },
+    {
+        "apiVersion":  "v1",
+        "count":  1,
+        "eventTime":  null,
+        "firstTimestamp":  "2026-11-22T04:07:34Z",
+        "involvedObject":  {
+                               "apiVersion":  "v1",
+                               "fieldPath":  "spec.containers{workload}",
+                               "kind":  "Pod",
+                               "name":  "order-capacity-blocker",
+                               "namespace":  "priority-scheduling",
+                               "resourceVersion":  "204104",
+                               "uid":  "7b644ece-6c36-444d-9789-abf8670346ff"
+                           },
+        "kind":  "Event",
+        "lastTimestamp":  "2026-11-22T04:07:34Z",
+        "message":  "Container started",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T04:07:34Z",
+                         "name":  "order-capacity-blocker.18ea4270e6192aea",
+                         "namespace":  "priority-scheduling",
+                         "resourceVersion":  "204110",
+                         "uid":  "61c12591-3dfd-4948-8ef0-76d32b547f2e"
+                     },
+        "reason":  "Started",
+        "reportingComponent":  "kubelet",
+        "reportingInstance":  "kind-worker",
+        "source":  {
+                       "component":  "kubelet",
+                       "host":  "kind-worker"
+                   },
+        "type":  "Normal"
+    },
+    {
+        "action":  "Scheduling",
+        "apiVersion":  "v1",
+        "eventTime":  "2026-11-22T04:07:35.833359Z",
+        "firstTimestamp":  null,
+        "involvedObject":  {
+                               "apiVersion":  "v1",
+                               "kind":  "Pod",
+                               "name":  "order-high-contestant",
+                               "namespace":  "priority-scheduling",
+                               "resourceVersion":  "204118",
+                               "uid":  "4d0ab1f5-77ac-42f8-bc5d-9775f3303df4"
+                           },
+        "kind":  "Event",
+        "lastTimestamp":  null,
+        "message":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: not eligible due to preemptionPolicy=Never.",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T04:07:35Z",
+                         "name":  "order-high-contestant.18ea42714bf0a785",
+                         "namespace":  "priority-scheduling",
+                         "resourceVersion":  "204119",
+                         "uid":  "56d5e33d-b935-4575-a389-9d12ce85ef92"
+                     },
+        "reason":  "FailedScheduling",
+        "reportingComponent":  "default-scheduler",
+        "reportingInstance":  "default-scheduler-kind-control-plane",
+        "source":  {
+
+                   },
+        "type":  "Warning"
+    }
+]

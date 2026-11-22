@@ -1,10 +1,12 @@
-﻿apiVersion: v1
+# Optional static sample for inspecting Pod PriorityClass references.
+# Use scripts/run-experiment-2.ps1 for capacity-calibrated preemption on both workers.
+apiVersion: v1
 kind: Pod
 metadata:
   name: victim-low-pod-1
   namespace: priority-scheduling
   labels:
-    experiment: experiment-2
+    experiment: manual-priority-sample
     role: victim
     tier: low
 spec:
@@ -16,11 +18,11 @@ spec:
     command: ["sh", "-c", "echo 'Victim Pod 1 running'; sleep 7200"]
     resources:
       requests:
-        cpu: "3074m"
-        memory: "256Mi"
+        cpu: "100m"
+        memory: "64Mi"
       limits:
-        cpu: "3688m"
-        memory: "512Mi"
+        cpu: "100m"
+        memory: "64Mi"
 ---
 apiVersion: v1
 kind: Pod
@@ -28,7 +30,7 @@ metadata:
   name: victim-low-pod-2
   namespace: priority-scheduling
   labels:
-    experiment: experiment-2
+    experiment: manual-priority-sample
     role: victim
     tier: low
 spec:
@@ -40,8 +42,8 @@ spec:
     command: ["sh", "-c", "echo 'Victim Pod 2 running'; sleep 7200"]
     resources:
       requests:
-        cpu: "3074m"
-        memory: "256Mi"
+        cpu: "100m"
+        memory: "64Mi"
       limits:
-        cpu: "3688m"
-        memory: "512Mi"
+        cpu: "100m"
+        memory: "64Mi"

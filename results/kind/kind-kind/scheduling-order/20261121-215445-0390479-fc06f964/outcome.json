@@ -1,0 +1,54 @@
+﻿{
+    "experiment":  "scheduling-order",
+    "context":  "kind-kind",
+    "status":  "PASS",
+    "message":  "Low was created first. Both had identical requests and were Pending for CPU. After one slot opened, the default scheduler placed high and low remained Pending.",
+    "recorded_at":  "2026-11-21T21:56:56.6648708Z",
+    "details":  {
+                    "preparation":  {
+                                        "runId":  "20261121-215445-0390479-fc06f964",
+                                        "node":  "kind-worker",
+                                        "hostname":  "kind-worker",
+                                        "capacityCpu":  "16",
+                                        "allocatableCpuMilli":  16000,
+                                        "initialRequestedCpuMilli":  100,
+                                        "blockerCpuMilli":  11925,
+                                        "candidateCpuMilli":  10335,
+                                        "candidateMemory":  "32Mi",
+                                        "freeWithBlockerMilli":  3975,
+                                        "blockerUid":  "cc493430-dcbe-44fa-b4c0-cd2fb35ea05b",
+                                        "lowUid":  "d94e2542-9db2-4590-9c57-d91e2da819ca",
+                                        "highUid":  "d70e097a-854e-4523-90af-d7490fae586b",
+                                        "lowCreatedAt":  "2026-11-21T21:54:46Z",
+                                        "highCreatedAt":  "2026-11-21T21:54:47Z"
+                                    },
+                    "freeBeforeReleaseMilli":  3975,
+                    "freeWithBlockerRemovedMilli":  15900.000,
+                    "releaseRequestedAt":  "2026-11-21T21:56:52.8197869Z",
+                    "highNode":  "kind-worker",
+                    "lowPhase":  "Pending",
+                    "highPhase":  "Running",
+                    "lowPodScheduled":  [
+                                            {
+                                                "lastProbeTime":  null,
+                                                "lastTransitionTime":  "2026-11-21T21:54:46Z",
+                                                "message":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: not eligible due to preemptionPolicy=Never.",
+                                                "observedGeneration":  1,
+                                                "reason":  "Unschedulable",
+                                                "status":  "False",
+                                                "type":  "PodScheduled"
+                                            }
+                                        ],
+                    "highPodScheduled":  [
+                                             {
+                                                 "lastProbeTime":  null,
+                                                 "lastTransitionTime":  "2026-11-21T21:56:55Z",
+                                                 "observedGeneration":  1,
+                                                 "status":  "True",
+                                                 "type":  "PodScheduled"
+                                             }
+                                         ],
+                    "pendingDemonstrated":  true,
+                    "conclusion":  "One shared CPU slot was released after both contestants were observed Pending."
+                }
+}

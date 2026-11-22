@@ -1,12 +1,12 @@
-# Experiment 2: Priority-Based Preemption Demonstration
-# Part 1: Lower-priority pods configured to consume node allocatable CPU
+# Optional static sample for inspecting Pod PriorityClass references.
+# Use scripts/run-experiment-2.ps1 for capacity-calibrated preemption on both workers.
 apiVersion: v1
 kind: Pod
 metadata:
   name: victim-low-pod-1
   namespace: priority-scheduling
   labels:
-    experiment: experiment-2
+    experiment: manual-priority-sample
     role: victim
     tier: low
 spec:
@@ -18,11 +18,11 @@ spec:
     command: ["sh", "-c", "echo 'Victim Pod 1 running'; sleep 7200"]
     resources:
       requests:
-        cpu: "600m"
-        memory: "256Mi"
+        cpu: "100m"
+        memory: "64Mi"
       limits:
-        cpu: "800m"
-        memory: "512Mi"
+        cpu: "100m"
+        memory: "64Mi"
 ---
 apiVersion: v1
 kind: Pod
@@ -30,7 +30,7 @@ metadata:
   name: victim-low-pod-2
   namespace: priority-scheduling
   labels:
-    experiment: experiment-2
+    experiment: manual-priority-sample
     role: victim
     tier: low
 spec:
@@ -42,20 +42,20 @@ spec:
     command: ["sh", "-c", "echo 'Victim Pod 2 running'; sleep 7200"]
     resources:
       requests:
-        cpu: "600m"
-        memory: "256Mi"
+        cpu: "100m"
+        memory: "64Mi"
       limits:
-        cpu: "800m"
-        memory: "512Mi"
+        cpu: "100m"
+        memory: "64Mi"
 ---
-# Part 2: High-priority preemptor pod
+
 apiVersion: v1
 kind: Pod
 metadata:
   name: preemptor-high-pod
   namespace: priority-scheduling
   labels:
-    experiment: experiment-2
+    experiment: manual-priority-sample
     role: preemptor
     tier: high
 spec:
@@ -67,8 +67,8 @@ spec:
     command: ["sh", "-c", "echo 'High-priority preemptor running'; sleep 7200"]
     resources:
       requests:
-        cpu: "900m"
-        memory: "256Mi"
+        cpu: "100m"
+        memory: "64Mi"
       limits:
-        cpu: "1200m"
-        memory: "512Mi"
+        cpu: "100m"
+        memory: "64Mi"

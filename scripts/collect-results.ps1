@@ -1,175 +1,94 @@
-# ==============================================================================
-# Script: collect-results.ps1
-# Description: Queries live Kubernetes pods & events, computes metrics and exports CSV
-# Project: Priority-Based Pod Scheduling in Kubernetes
-# ==============================================================================
-
 [CmdletBinding()]
-param (
-    [string]$ExperimentName = "all",
-    [string]$Namespace = "priority-scheduling"
+param(
+    [ValidateSet('all', 'experiment-1', 'scheduling-order', 'experiment-2')][string]$ExperimentName = 'all',
+    [string]$RunPath,
+    [object[]]$Pods,
+    [object[]]$Events,
+    [hashtable]$FinalPods,
+    [string[]]$ConfirmedVictims = @()
 )
 
-$ErrorActionPreference = "Continue"
+. (Join-Path $PSScriptRoot 'lab-common.ps1')
 
-Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host " [METRICS COLLECTION] Live Kubernetes Pods & Events" -ForegroundColor Cyan
-Write-Host "==========================================================" -ForegroundColor Cyan
-
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ProjectRoot = Split-Path -Parent $ScriptDir
-$ResultsDir = Join-Path $ProjectRoot "results"
-
-if (-not (Test-Path $ResultsDir)) {
-    New-Item -ItemType Directory -Path $ResultsDir -Force | Out-Null
-}
-
-# 1. Fetch Pods JSON from cluster
-Write-Host "`n[1/3] Querying Kubernetes API for pods in namespace '$Namespace'..." -ForegroundColor Yellow
-$podsRaw = kubectl get pods -n $Namespace -o json 2>&1
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "[ERROR] Failed to query pods. Make sure cluster is reachable." -ForegroundColor Red
-    Write-Host $podsRaw -ForegroundColor Yellow
-    exit 1
-}
-
-$podsJson = $podsRaw | ConvertFrom-Json
-$podItems = $podsJson.items
-
-if ($null -eq $podItems -or $podItems.Count -eq 0) {
-    Write-Host "[WARNING] No pods found in namespace '$Namespace'." -ForegroundColor Yellow
-    exit 0
-}
-
-Write-Host "  Found $($podItems.Count) pod(s)." -ForegroundColor Green
-
-# 2. Extract detailed metrics per pod
-Write-Host "`n[2/3] Parsing scheduling timestamps and priority metrics..." -ForegroundColor Yellow
-
-$records = @()
-
-foreach ($pod in $podItems) {
-    $pName = $pod.metadata.name
-    $pClass = if ($pod.spec.priorityClassName) { $pod.spec.priorityClassName } else { "none" }
-    $pValue = if ($null -ne $pod.spec.priority) { $pod.spec.priority } else { 0 }
-    $pPhase = $pod.status.phase
-    $pNode = if ($pod.spec.nodeName) { $pod.spec.nodeName } else { "Unassigned (Pending)" }
-    $createdAtStr = $pod.metadata.creationTimestamp
-
-    # Find PodScheduled condition
-    $scheduledCond = $pod.status.conditions | Where-Object { $_.type -eq "PodScheduled" }
-    $scheduledAtStr = if ($scheduledCond) { $scheduledCond.lastTransitionTime } else { "N/A" }
-
-    # Find container start time
-    $containerStatus = $pod.status.containerStatuses | Select-Object -First 1
-    $startedAtStr = "N/A"
-    if ($containerStatus -and $containerStatus.state.running) {
-        $startedAtStr = $containerStatus.state.running.startedAt
+if (-not $RunPath) {
+    Assert-LabIdentity
+    $category = if ($ExperimentName -eq 'all') { 'all' } else { "snapshot-$ExperimentName" }
+    $RunPath = New-LabResultPath $category
+    if ($ExperimentName -eq 'all') {
+        $Pods = @((Get-LabJson @('get', 'pods', '-n', $Namespace)).items)
+    } else {
+        $Pods = @(Get-LabExperimentPods $ExperimentName)
     }
-
-    # Calculate scheduling latency in seconds
-    $schedulingLatencySec = "N/A"
-    if ($createdAtStr -and $scheduledAtStr -ne "N/A") {
-        try {
-            $createdDt = [DateTime]::Parse($createdAtStr)
-            $schedDt = [DateTime]::Parse($scheduledAtStr)
-            $diff = ($schedDt - $createdDt).TotalSeconds
-            $schedulingLatencySec = [math]::Round($diff, 3)
-            if ($schedulingLatencySec -lt 0) { $schedulingLatencySec = 0.0 }
-        } catch {
-            $schedulingLatencySec = "N/A"
-        }
+    $Events = @(Get-LabEvents)
+}
+$podRuns = @{}
+foreach ($pod in $Pods) { $podRuns[$pod.metadata.uid] = $pod.metadata.labels.'lab-run' }
+$uids = @($podRuns.Keys)
+$eventRows = @(foreach ($event in $Events) {
+    $subject = $event.involvedObject
+    if ($ExperimentName -ne 'all' -and $subject.uid -notin $uids) { continue }
+    $first = $event.eventTime
+    if (-not $first) { $first = $event.firstTimestamp }
+    if (-not $first) { $first = $event.metadata.creationTimestamp }
+    $time = $event.series.lastObservedTime
+    if (-not $time) { $time = $event.lastTimestamp }
+    if (-not $time) { $time = $first }
+    $eventRun = if ($subject.uid) { $podRuns[$subject.uid] } else { $null }
+    [pscustomobject][ordered]@{
+        LastTimestamp = $time; Type = $event.type; Reason = $event.reason
+        InvolvedObject = "$($subject.kind)/$($subject.name)"; Message = $event.message
+        Source = Get-LabEventSource $event
+        PodUID = $subject.uid; RelatedUID = $event.related.uid; EventUID = $event.metadata.uid
+        FirstTimestamp = $first; ResourceCreatedTimestamp = $event.metadata.creationTimestamp
+        RunId = $eventRun
     }
-
-    # Extract CPU and Memory requests/limits
-    $container = $pod.spec.containers | Select-Object -First 1
-    $cpuReq = if ($container.resources.requests.cpu) { $container.resources.requests.cpu } else { "none" }
-    $memReq = if ($container.resources.requests.memory) { $container.resources.requests.memory } else { "none" }
-    $cpuLimit = if ($container.resources.limits.cpu) { $container.resources.limits.cpu } else { "none" }
-    $memLimit = if ($container.resources.limits.memory) { $container.resources.limits.memory } else { "none" }
-
-    # Extract preemption status or eviction notice
-    $preemptionStatus = "None"
-    if ($pod.status.reason -eq "Evicted" -or $pod.metadata.deletionTimestamp) {
-        $preemptionStatus = "Preempted / Terminating"
+})
+$records = @(foreach ($pod in ($Pods | Sort-Object { $_.metadata.name })) {
+    $uid = $pod.metadata.uid
+    $phase = $pod.status.phase
+    if ($null -ne $FinalPods -and -not $FinalPods.ContainsKey($uid)) { $phase = 'Deleted' }
+    elseif ($pod.metadata.deletionTimestamp) { $phase = 'Terminating' }
+    $scheduled = ($pod.status.conditions | Where-Object { $_.type -eq 'PodScheduled' -and $_.status -eq 'True' }).lastTransitionTime
+    $started = ($pod.status.containerStatuses | Select-Object -First 1).state.running.startedAt
+    $latency = if ($scheduled -and $pod.metadata.creationTimestamp) {
+        [math]::Max(0, ([datetimeoffset]$scheduled - [datetimeoffset]$pod.metadata.creationTimestamp).TotalSeconds)
+    } else { 'N/A' }
+    $resource = ($pod.spec.containers | Select-Object -First 1).resources
+    $confirmed = $uid -in $ConfirmedVictims
+    $schedulerEvent = @($eventRows | Where-Object {
+        $_.PodUID -eq $uid -and $_.Reason -eq 'Preempted' -and $_.Source -eq 'default-scheduler'
+    }).Count -gt 0
+    $disrupted = @($pod.status.conditions | Where-Object {
+        $_.type -eq 'DisruptionTarget' -and $_.status -eq 'True' -and $_.reason -eq 'PreemptionByScheduler'
+    }).Count -gt 0
+    $preemption = if ($confirmed) { 'Confirmed' }
+        elseif ($schedulerEvent -or $disrupted) { 'Scheduler evidence' }
+        else { 'None' }
+    [pscustomobject][ordered]@{
+        PodName = $pod.metadata.name; PriorityClass = $pod.spec.priorityClassName; PriorityValue = $pod.spec.priority
+        Status = $phase; Node = $pod.spec.nodeName; CpuRequest = $resource.requests.cpu; MemoryRequest = $resource.requests.memory
+        CpuLimit = $resource.limits.cpu; MemoryLimit = $resource.limits.memory; CreationTime = $pod.metadata.creationTimestamp
+        ScheduledTime = $scheduled; StartTime = $started; SchedulingLatencySec = $latency
+        PreemptionStatus = $preemption; PodUID = $uid; Experiment = $pod.metadata.labels.experiment
+        LastObservedPhase = $pod.status.phase; NominatedNode = $pod.status.nominatedNodeName; PodScheduled = if ($scheduled) { 'True' } else { ($pod.status.conditions | Where-Object type -eq PodScheduled).status }
     }
-
-    $records += [PSCustomObject]@{
-        PodName                 = $pName
-        PriorityClass           = $pClass
-        PriorityValue           = $pValue
-        Status                  = $pPhase
-        Node                    = $pNode
-        CpuRequest              = $cpuReq
-        MemoryRequest           = $memReq
-        CpuLimit                = $cpuLimit
-        MemoryLimit             = $memLimit
-        CreationTime            = $createdAtStr
-        ScheduledTime           = $scheduledAtStr
-        StartTime               = $startedAtStr
-        SchedulingLatencySec    = $schedulingLatencySec
-        PreemptionStatus        = $preemptionStatus
-    }
+})
+function Export-LabCsv($Rows, [string]$Name, [string]$Header) {
+    $file = Join-Path $RunPath $Name
+    if ($Rows.Count) { $Rows | Export-Csv -LiteralPath $file -NoTypeInformation -Encoding UTF8 }
+    else { Set-Content -LiteralPath $file -Value $Header -Encoding UTF8 }
 }
-
-# Display tabular output on terminal
-Write-Host "`nPod Scheduling Summary:" -ForegroundColor Cyan
-$records | Format-Table -Property PodName, PriorityClass, PriorityValue, Status, Node, SchedulingLatencySec, PreemptionStatus -AutoSize
-
-# Export Pod Metrics CSV
-$timestampSuffix = (Get-Date).ToString("yyyyMMdd-HHmmss")
-$csvFilename = if ($ExperimentName -ne "all") {
-    "$ExperimentName-results-$timestampSuffix.csv"
-} else {
-    "all-pods-summary-$timestampSuffix.csv"
+New-Item -ItemType Directory -Path $RunPath -Force | Out-Null
+$podFile = if ($ExperimentName -eq 'all') { 'all-pods-summary.csv' } else { "$ExperimentName-results.csv" }
+Export-LabCsv $records $podFile 'PodName,PriorityClass,PriorityValue,Status,Node,CpuRequest,MemoryRequest,CpuLimit,MemoryLimit,CreationTime,ScheduledTime,StartTime,SchedulingLatencySec,PreemptionStatus,PodUID,Experiment,LastObservedPhase,NominatedNode,PodScheduled'
+# Core/v1 Event times use UTC with optional fractional seconds. Parse the time
+# so whole-second values and subsecond values in the same second sort correctly.
+$chronological = @($eventRows | Sort-Object @{
+    Expression = { if ($_.FirstTimestamp) { [datetimeoffset]$_.FirstTimestamp } else { [datetimeoffset]::MaxValue } }
+})
+Export-LabCsv $chronological 'kubernetes-events.csv' 'LastTimestamp,Type,Reason,InvolvedObject,Message,Source,PodUID,RelatedUID,EventUID,FirstTimestamp,ResourceCreatedTimestamp,RunId'
+$records | Format-Table PodName, PriorityClass, PriorityValue, Status, Node, CpuRequest, MemoryRequest, PreemptionStatus -AutoSize | Out-Host
+Write-Host "Collected $($records.Count) Pod rows and $($eventRows.Count) event rows in $RunPath"
+if (-not $PSBoundParameters.ContainsKey('RunPath')) {
+    Write-LabOutcome $RunPath $category 'PASS' 'Live snapshot exported.' $null
 }
-$csvLatestFilename = if ($ExperimentName -ne "all") {
-    "$ExperimentName-results.csv"
-} else {
-    "all-pods-summary.csv"
-}
-
-$csvPath = Join-Path $ResultsDir $csvFilename
-$csvLatestPath = Join-Path $ResultsDir $csvLatestFilename
-
-$records | Export-Csv -Path $csvPath -NoTypeInformation -Encoding UTF8
-$records | Export-Csv -Path $csvLatestPath -NoTypeInformation -Encoding UTF8
-
-Write-Host "  [SAVED] Pod metrics saved to: $csvLatestPath" -ForegroundColor Green
-
-# 3. Collect Kubernetes Events (Preemption & Scheduling events)
-Write-Host "`n[3/3] Querying Kubernetes Events..." -ForegroundColor Yellow
-$eventsRaw = kubectl get events -n $Namespace -o json 2>&1
-$eventRecords = @()
-
-if ($LASTEXITCODE -eq 0) {
-    $eventsJson = $eventsRaw | ConvertFrom-Json
-    foreach ($ev in $eventsJson.items) {
-        $eventRecords += [PSCustomObject]@{
-            LastTimestamp = $ev.lastTimestamp
-            Type          = $ev.type
-            Reason        = $ev.reason
-            InvolvedObject= "$($ev.involvedObject.kind)/$($ev.involvedObject.name)"
-            Message       = $ev.message
-            Source        = $ev.source.component
-        }
-    }
-}
-
-if ($eventRecords.Count -gt 0) {
-    Write-Host "`nRecent Kubernetes Events in namespace '$Namespace':" -ForegroundColor Cyan
-    $eventRecords | Select-Object -Last 10 | Format-Table -Property LastTimestamp, Reason, InvolvedObject, Message -AutoSize
-
-    $eventsCsvLatest = Join-Path $ResultsDir "kubernetes-events.csv"
-    $eventsCsvTimestamped = Join-Path $ResultsDir "kubernetes-events-$timestampSuffix.csv"
-    $eventRecords | Export-Csv -Path $eventsCsvLatest -NoTypeInformation -Encoding UTF8
-    $eventRecords | Export-Csv -Path $eventsCsvTimestamped -NoTypeInformation -Encoding UTF8
-    Write-Host "  [SAVED] Events saved to: $eventsCsvLatest" -ForegroundColor Green
-} else {
-    Write-Host "  No events found in namespace '$Namespace'." -ForegroundColor Gray
-}
-
-Write-Host "`n==========================================================" -ForegroundColor Green
-Write-Host " Results collection completed successfully." -ForegroundColor Green
-Write-Host "==========================================================" -ForegroundColor Green

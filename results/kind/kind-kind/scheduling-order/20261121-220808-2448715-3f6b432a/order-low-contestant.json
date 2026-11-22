@@ -1,0 +1,43 @@
+{
+    "spec":  {
+                 "priorityClassName":  "order-low-priority",
+                 "nodeSelector":  {
+                                      "kubernetes.io/hostname":  "kind-worker"
+                                  },
+                 "restartPolicy":  "Never",
+                 "containers":  [
+                                    {
+                                        "command":  [
+                                                        "sleep",
+                                                        "7200"
+                                                    ],
+                                        "name":  "workload",
+                                        "resources":  {
+                                                          "limits":  {
+                                                                         "cpu":  "10335m",
+                                                                         "memory":  "64Mi"
+                                                                     },
+                                                          "requests":  {
+                                                                           "cpu":  "10335m",
+                                                                           "memory":  "32Mi"
+                                                                       }
+                                                      },
+                                        "image":  "busybox:1.36"
+                                    }
+                                ],
+                 "terminationGracePeriodSeconds":  2
+             },
+    "metadata":  {
+                     "labels":  {
+                                    "tier":  "low",
+                                    "experiment":  "scheduling-order",
+                                    "lab-run":  "20261121-220808-2448715-3f6b432a",
+                                    "app.kubernetes.io/managed-by":  "priority-scheduling-lab",
+                                    "role":  "contestant"
+                                },
+                     "name":  "order-low-contestant",
+                     "namespace":  "priority-scheduling"
+                 },
+    "apiVersion":  "v1",
+    "kind":  "Pod"
+}

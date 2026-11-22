@@ -1,0 +1,81 @@
+[
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "High-priority class for mission-critical Kubernetes workloads that can preempt lower priority workloads.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"High-priority class for mission-critical Kubernetes workloads that can preempt lower priority workloads.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"name\":\"high-priority\"},\"preemptionPolicy\":\"PreemptLowerPriority\",\"value\":100000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-21T21:12:49Z",
+                         "generation":  1,
+                         "name":  "high-priority",
+                         "resourceVersion":  "162527",
+                         "uid":  "d2422a9b-2d56-4997-9bd6-2abbdfec82e5"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  100000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Low-priority class for batch, background, or non-critical workloads that can be preempted.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"Low-priority class for batch, background, or non-critical workloads that can be preempted.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"name\":\"low-priority\"},\"preemptionPolicy\":\"PreemptLowerPriority\",\"value\":10000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-21T21:12:49Z",
+                         "generation":  1,
+                         "name":  "low-priority",
+                         "resourceVersion":  "162529",
+                         "uid":  "11daaef4-6767-4972-bc18-58cb13ff2046"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  10000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Medium-priority class for regular production workloads.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"Medium-priority class for regular production workloads.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"name\":\"medium-priority\"},\"preemptionPolicy\":\"PreemptLowerPriority\",\"value\":50000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-21T21:12:49Z",
+                         "generation":  1,
+                         "name":  "medium-priority",
+                         "resourceVersion":  "162528",
+                         "uid":  "5631a439-35a9-4cde-b1cf-f0fd0a08ab76"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  50000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Used for system critical pods that must run in the cluster, but can be moved to another node if necessary.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-16T05:25:05Z",
+                         "generation":  1,
+                         "name":  "system-cluster-critical",
+                         "resourceVersion":  "104",
+                         "uid":  "f217c917-e926-4f3f-b636-47318b1a59a6"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  2000000000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Used for system critical pods that must not be moved from their current node.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-16T05:25:05Z",
+                         "generation":  1,
+                         "name":  "system-node-critical",
+                         "resourceVersion":  "103",
+                         "uid":  "fba0c49f-7efc-4407-9ad1-dd6d5a4fb6cb"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  2000001000
+    }
+]

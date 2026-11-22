@@ -1,0 +1,17 @@
+{
+    "runId":  "20261122-040731-0352572-fd1c9a0f",
+    "node":  "kind-worker",
+    "hostname":  "kind-worker",
+    "capacityCpu":  "16",
+    "allocatableCpuMilli":  16000,
+    "initialRequestedCpuMilli":  100,
+    "blockerCpuMilli":  11925,
+    "candidateCpuMilli":  10335,
+    "candidateMemory":  "32Mi",
+    "freeWithBlockerMilli":  3975,
+    "blockerUid":  "7b644ece-6c36-444d-9789-abf8670346ff",
+    "lowUid":  "a77615e5-f212-40d4-9aaf-6c5923e9005c",
+    "highUid":  "4d0ab1f5-77ac-42f8-bc5d-9775f3303df4",
+    "lowCreatedAt":  "2026-11-22T04:07:34Z",
+    "highCreatedAt":  "2026-11-22T04:07:35Z"
+}

@@ -1,0 +1,95 @@
+﻿{
+    "experiment":  "experiment-2",
+    "context":  "kind-kind",
+    "status":  "PASS",
+    "message":  "The equal-priority probe stayed Pending under the same CPU shortfall. Both high Pods encountered Insufficient cpu, then ran on their planned workers. Scheduler events and actual Pod states confirm low-priority preemption on both workers. Both medium Pods are still Running.",
+    "recorded_at":  "2026-11-21T21:57:23.7770573Z",
+    "details":  {
+                    "observedNominations":  {
+                                                "f81621b8-72e9-47e1-ac0e-5ded6786ad12":  "kind-worker2",
+                                                "ebf11b00-e9a3-4ab6-993f-99ba664a788a":  "kind-worker"
+                                            },
+                    "workers":  [
+                                    {
+                                        "node":  "kind-worker",
+                                        "hostname":  "kind-worker",
+                                        "medium":  "customer-portal-api",
+                                        "low":  [
+                                                    "batch-analytics-worker-1",
+                                                    "video-transcoder-node-1",
+                                                    "data-crawler-job-1"
+                                                ],
+                                        "high":  "emergency-payment-surge",
+                                        "cpuAllocatableMilli":  16000,
+                                        "memoryAllocatableBytes":  8130285568,
+                                        "initialRequestedCpuMilli":  100,
+                                        "initialRequestedMemoryBytes":  52428800,
+                                        "mediumCpuMilli":  1590,
+                                        "lowCpuMilli":  3975,
+                                        "freeCpuBeforeHighMilli":  2385,
+                                        "freeMemoryBeforeHighBytes":  7943639040,
+                                        "highCpuMilli":  4373,
+                                        "requestedCpuAfterMilli":  14013,
+                                        "freeCpuAfterMilli":  1987
+                                    },
+                                    {
+                                        "node":  "kind-worker2",
+                                        "hostname":  "kind-worker2",
+                                        "medium":  "inventory-query-service",
+                                        "low":  [
+                                                    "batch-analytics-worker-2",
+                                                    "video-transcoder-node-2"
+                                                ],
+                                        "high":  "critical-order-surge",
+                                        "cpuAllocatableMilli":  16000,
+                                        "memoryAllocatableBytes":  8130285568,
+                                        "initialRequestedCpuMilli":  100,
+                                        "initialRequestedMemoryBytes":  52428800,
+                                        "mediumCpuMilli":  1590,
+                                        "lowCpuMilli":  5962,
+                                        "freeCpuBeforeHighMilli":  2386,
+                                        "freeMemoryBeforeHighBytes":  7977193472,
+                                        "highCpuMilli":  5367,
+                                        "requestedCpuAfterMilli":  13019,
+                                        "freeCpuAfterMilli":  2981
+                                    }
+                                ],
+                    "confirmedVictimUids":  [
+                                                "0470182b-63af-45cc-8898-cb22760d3cd9",
+                                                "1f19dd97-d96f-4205-b927-122b19631909"
+                                            ],
+                    "baselinePodUids":  {
+                                            "batch-analytics-worker-1":  "62d70a5b-43a2-4ea8-8e7a-b248b5dc4c0c",
+                                            "batch-analytics-worker-2":  "6568115d-196e-460c-91a6-bedb89c1fb1a",
+                                            "video-transcoder-node-1":  "ae5abfde-0843-4de6-9604-6057e75f756b",
+                                            "data-crawler-job-1":  "0470182b-63af-45cc-8898-cb22760d3cd9",
+                                            "inventory-query-service":  "2d8aa292-eaa6-4ba7-8847-eb2cc830801c",
+                                            "video-transcoder-node-2":  "1f19dd97-d96f-4205-b927-122b19631909",
+                                            "customer-portal-api":  "6ef90b35-340c-4619-9e98-4c6ba3cb1a64"
+                                        },
+                    "priorityComparison":  {
+                                               "node":  "kind-worker",
+                                               "equalPod":  "equal-priority-payment-probe",
+                                               "equalUid":  "260f84df-a347-4f1b-9e80-f18254248d8c",
+                                               "equalPriority":  10000,
+                                               "highPod":  "emergency-payment-surge",
+                                               "highPriority":  100000,
+                                               "incomingCpuMilli":  4373,
+                                               "incomingMemory":  "64Mi",
+                                               "freeCpuMilli":  2385,
+                                               "failure":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: 0/3 nodes are available: 1 No preemption victims found for incoming pod, 2 Preemption is not helpful for scheduling.",
+                                               "equalPhase":  "Pending",
+                                               "comparableBaseline":  true,
+                                               "highPhase":  "Running",
+                                               "highUid":  "ebf11b00-e9a3-4ab6-993f-99ba664a788a"
+                                           },
+                    "highPodUids":  {
+                                        "emergency-payment-surge":  "ebf11b00-e9a3-4ab6-993f-99ba664a788a",
+                                        "critical-order-surge":  "f81621b8-72e9-47e1-ac0e-5ded6786ad12"
+                                    },
+                    "cpuSchedulingFailures":  {
+                                                  "f81621b8-72e9-47e1-ac0e-5ded6786ad12":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: not eligible due to a terminating pod on the nominated node.",
+                                                  "ebf11b00-e9a3-4ab6-993f-99ba664a788a":  "0/3 nodes are available: 1 Insufficient cpu, 1 node(s) didn\u0027t match Pod\u0027s node affinity/selector, 1 node(s) had untolerated taint(s). preemption: found a potential placement for pod on node kind-worker, preempting 1 victims"
+                                              }
+                }
+}
