@@ -31,8 +31,33 @@ Priority in Kubernetes is an admitted, immutable integer resolved by the API adm
 | **`medium-priority`** | **`50000`** | `PreemptLowerPriority` | **Search Service, Recommendation Engine, Inventory API** | Customer-facing regular services. Can tolerate queueing behind checkout, but cannot be preempted by batch analytics. |
 | **`low-priority`** | **`10000`** | `PreemptLowerPriority` *(or `Never` in order test)* | **Video Transcoding, Nightly ETL, Web Scraping, Log Analytics** | Fault-tolerant, restartable batch jobs. Can be cleanly killed and rescheduled later when nodes free up. |
 
-*Why these numbers?*  
-Kubernetes reserve values above `1,000,000,000` for system-critical daemonsets (`system-cluster-critical` = 2000000000, `system-node-critical` = 2000001000). User workload priorities are positive 32-bit integers ($\le 10^9$). We choose $100000$, $50000$, and $10000$ to maintain clear mathematical stratification across tiers.
+---
+
+## 2.1 How Priority Scores are ACTUALLY Determined in Real Companies (Debunking the "Assumption" Myth)
+
+Developers **never** arbitrarily invent numbers out of thin air in production. In enterprise Kubernetes (Google Borg, Netflix, Uber, AWS EKS), priorities are governed by **automated platform policy frameworks**:
+
+### 1. Service Level Agreements (SLAs) & Tiering Matrix
+Enterprises categorize every service into formal architectural tiers before deployment:
+- **Tier-0 (P0 - Critical Path)**: Services that directly stop revenue or user authentication (e.g., Auth, Payments). Target availability: 99.99%. PriorityClass: `tier0-high` ($100,000+$).
+- **Tier-1 (P1 - Core Business)**: Degrades experience if down, but users can still checkout (e.g., Search, Recommendations, Inventory). Target: 99.9%. PriorityClass: `tier1-medium` ($50,000$).
+- **Tier-2 / Tier-3 (P2/P3 - Asynchronous/Batch)**: Can be delayed by minutes or hours with zero business loss (e.g., BigQuery exports, video re-encoding, web crawlers, model training). PriorityClass: `tier2-batch` ($10,000$).
+
+### 2. Automated Admission Webhooks (OPA Gatekeeper / Kyverno)
+In real clusters, individual engineers are **forbidden** from assigning `priorityClassName: high-priority` in their YAML manifests.
+Instead, organizations enforce policies via **Validating / Mutating Admission Webhooks**:
+- When a developer submits a manifest via CI/CD, the admission webhook inspects the team's namespace, repo metadata, and SLA declaration.
+- If an analytics batch job tries to set `high-priority`, the policy engine rejects the deployment (`403 Forbidden`).
+- The mutating webhook automatically injects the pre-approved `PriorityClass` based on the workload's registered service tier.
+
+### 3. PriorityClass (Scheduling) vs. QoS Class (Linux OOM-Killer)
+A common point of confusion is mixing up **`PriorityClass`** with **`QoS Class`**:
+- **`PriorityClass`** dictates **which Pod `kube-scheduler` places first** and which pod gets preempted when a node is **overcommitted on Resource Requests**.
+- **`QoS Class` (Guaranteed / Burstable / BestEffort)** dictates **which Linux process the Linux kernel OOM-killer terminates** when physical RAM runs out on the node (via `/proc/<pid>/oom_score_adj`).
+- *Both work together in production*: A Tier-0 service has both `high-priority` PriorityClass (so it schedules immediately) and `Guaranteed` QoS (so the Linux kernel never kills it).
+
+*Why these numbers ($100000, 50000, 10000$)?*  
+Kubernetes reserve values above `1,000,000,000` for system daemons (`system-cluster-critical` = 2000000000, `system-node-critical` = 2000001000). User workload priorities are positive 32-bit integers ($\le 10^9$). We choose $100000$, $50000$, and $10000$ to maintain clear mathematical stratification across tiers.
 
 ---
 
