@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kubernetes Priority-Based Scheduling & Preemption - Evaluation Report</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm 8mm 10mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    font-size: 7.2pt;
+    line-height: 1.25;
+  }
+  
+  .page {
+    width: 100%;
+    height: 279mm;
+    max-height: 279mm;
+    position: relative;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid #1e3a8a;
+    padding-bottom: 4px;
+    margin-bottom: 5px;
+  }
+  .course-tag {
+    font-size: 6.8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2563eb;
+    letter-spacing: 0.5px;
+  }
+  .doc-title {
+    font-size: 11.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 2px 0;
+  }
+  .subtitle {
+    font-size: 7.2pt;
+    color: #475569;
+    font-weight: 500;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 3px 6px;
+    margin-top: 3px;
+    font-size: 6.8pt;
+  }
+
+  /* Sections */
+  h2 {
+    font-size: 8.2pt;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 4px 0 2px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-left: 2.5px solid #2563eb;
+    padding-left: 4px;
+  }
+  p {
+    margin: 0 0 3px 0;
+    text-align: justify;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3px 0 4px 0;
+    font-size: 6.8pt;
+  }
+  th {
+    background: #1e293b;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 2.5px 4px;
+    border: 1px solid #334155;
+  }
+  td {
+    padding: 2px 4px;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  /* Layout */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  /* Callouts */
+  .callout {
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 3px;
+    padding: 3px 5px;
+    margin: 2px 0;
+    font-size: 6.9pt;
+  }
+  .callout-title {
+    font-weight: 700;
+    color: #1d4ed8;
+    margin-bottom: 1px;
+  }
+  .callout-dark {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 3px 5px;
+    margin: 2px 0;
+    font-size: 6.8pt;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 0.5px 3px;
+    border-radius: 2px;
+    font-size: 6pt;
+    font-weight: 700;
+  }
+  .badge-pass { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+  /* Math & Diagram */
+  .math-box {
+    background: #faf5ff;
+    border: 1px solid #e9d5ff;
+    border-radius: 3px;
+    padding: 2.5px 5px;
+    font-family: 'Consolas', monospace;
+    font-size: 6.6pt;
+    color: #581c87;
+    margin: 2px 0;
+  }
+  .diagram-box {
+    background: #0f172a;
+    color: #38bdf8;
+    font-family: 'Consolas', monospace;
+    font-size: 6.1pt;
+    line-height: 1.18;
+    padding: 4px 6px;
+    border-radius: 3px;
+    margin: 3px 0;
+  }
+
+  .footer {
+    border-top: 1px solid #cbd5e1;
+    padding-top: 2px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 6.2pt;
+    color: #64748b;
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div>
+    <div class="header">
+      <div class="course-tag">Cloud Computing Lab (Evaluation 2) &bull; Problem Statement 05</div>
+      <div class="doc-title">Priority-Based Pod Scheduling & Native Preemption Analysis</div>
+      <div class="subtitle">Empirical Verification of Standard Go <code>kube-scheduler</code> Queue Ordering, Filtering & Preemption</div>
+      <div class="meta-grid">
+        <div><strong>Cluster:</strong> kind v0.33.0 (k8s v1.31+)</div>
+        <div><strong>Nodes:</strong> 1 Control-Plane, 2 Workers</div>
+        <div><strong>Engine:</strong> containerd on WSL 2</div>
+        <div><strong>Scheduler:</strong> Native Go <code>kube-scheduler</code></div>
+      </div>
+    </div>
+
+    <h2>1. Official Problem 05 Traceability & Compliance Matrix</h2>
+    <p>Every requirement of syllabus Problem 05 was implemented and empirically proven using unmodified Kubernetes control-plane components:</p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 26%;">Syllabus Requirement</th>
+          <th style="width: 46%;">Implementation Mechanism & Scientific Proof</th>
+          <th style="width: 28%;">Verification Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Multiple PriorityClasses</strong></td>
+          <td>Created 3 formal tiers: High (100000), Medium (50000), Low (10000) using <code>scheduling.k8s.io/v1</code>.</td>
+          <td><code>configs/priority-classes.yaml</code></td>
+        </tr>
+        <tr>
+          <td><strong>2. Workloads with Different Priorities</strong></td>
+          <td>Deployed 12 multi-tier pods representing enterprise microservices bound to respective PriorityClasses across dual workers.</td>
+          <td><code>experiments/experiment-1.yaml</code></td>
+        </tr>
+        <tr>
+          <td><strong>3. Limited Resource Scheduling</strong></td>
+          <td>Pre-loaded workers to 85% committed CPU requests, leaving residual CPU insufficient for incoming large workloads.</td>
+          <td>Worker Allocatable Accounting</td>
+        </tr>
+        <tr>
+          <td><strong>4. Demonstrate Pod Scheduling Order</strong></td>
+          <td>Single vacancy opened with Low and High waiting. Scheduler placed High first, proving <strong>Priority over FIFO</strong>.</td>
+          <td>Stage 2B (Release One Slot) &bull; PASS</td>
+        </tr>
+        <tr>
+          <td><strong>5. Demonstrate Pending Pods</strong></td>
+          <td>Observed genuine Kubernetes <code>Pending</code> states caused by native <code>FailedScheduling: Insufficient cpu</code> events.</td>
+          <td><code>kubectl describe pod</code> telemetry</td>
+        </tr>
+        <tr>
+          <td><strong>6. Demonstrate Preemption Events</strong></td>
+          <td>High-priority pod forced scheduler to nominate worker, evict lower-priority victim via SIGTERM, and bind to node.</td>
+          <td><code>kubectl get events (Preempted)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Industry Priority Governance (How Real Companies Determine Priorities)</h2>
+    <p>In production (Google Borg, Netflix, Uber, AWS EKS), developers <strong>never</strong> pick priority scores arbitrarily. Priorities are governed by formal platform policies:</p>
+    <div class="grid-2">
+      <div class="callout">
+        <div class="callout-title">A. Service SLA Tiering Matrix</div>
+        <ul style="margin: 0 0 0 10px; padding: 0;">
+          <li><strong>Tier-0 (P0 - Critical Path):</strong> Payment, Auth, Checkout APIs. Cannot tolerate pending latency. Priority: <code>100000+</code>.</li>
+          <li><strong>Tier-1 (P1 - Core Services):</strong> Catalog, Search, Inventory. User-facing but can queue briefly. Priority: <code>50000</code>.</li>
+          <li><strong>Tier-2/3 (P2/P3 - Batch):</strong> Video transcoding, ETL, ML training. Interruptible jobs. Priority: <code>10000</code>.</li>
+        </ul>
+      </div>
+      <div class="callout">
+        <div class="callout-title">B. Automated Policy Injection (Admission Webhooks)</div>
+        <p style="margin: 0;">Engineers are strictly prohibited from setting <code>high-priority</code> manually. Validating/Mutating Admission Controllers (<strong>OPA Gatekeeper / Kyverno</strong>) inspect CI/CD metadata and automatically inject the approved PriorityClass based on registered service catalog tiers.</p>
+      </div>
+    </div>
+
+    <h2>3. <code>kube-scheduler</code> Mechanics: Priority Queue & Two-Phase Cycles</h2>
+    <p>Kubernetes does not use FIFO queueing. Internally (within <code>pkg/scheduler/internal/queue/scheduling_queue.go</code>), <code>kube-scheduler</code> maintains an active queue (<strong><code>activeQ</code></strong>) structured as a <strong>Heap-Based Priority Queue</strong>:</p>
+    <div class="diagram-box">
+Pod Submitted &rarr; API Server &rarr; activeQ (Max-Heap by Priority Value) &rarr; Pop Highest Priority Pod
++----------------------------------------------------------------------------------------------------+
+| 1. SCHEDULING CYCLE: [Filter Phase] (Node Capacity >= Requests?) &rarr; If NO &rarr; [Enter Preemption Cycle]     |
+|                      [Score Phase] (Rank fitting nodes) &rarr; [Reserve/Permit] &rarr; [Bind to Node]             |
++----------------------------------------------------------------------------------------------------+
+| 2. PREEMPTION CYCLE: a. Filter nodes where evicting lower-priority pods frees required CPU        |
+|                      b. Select minimum victim count with lowest priority (evict low, keep medium)  |
+|                      c. Set nominatedNodeName &rarr; Issue SIGTERM &rarr; Victims exit &rarr; Bind high-priority Pod |
++----------------------------------------------------------------------------------------------------+
+    </div>
+    <div class="callout-dark">
+      <strong>Scheduling Priority vs. Linux Kernel QoS:</strong><br>
+      &bull; <strong>PriorityClass:</strong> Controls <code>kube-scheduler</code> placement & preemption when <em>CPU/Memory Requests</em> are saturated.<br>
+      &bull; <strong>QoS Class (Guaranteed/Burstable/BestEffort):</strong> Controls Linux <code>oom_score_adj</code> for the Linux Kernel OOM-Killer when <em>physical host RAM</em> runs out. Real Tier-0 services use both High PriorityClass and Guaranteed QoS.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Cloud Computing Lab &bull; Technical Evaluation Report &bull; Problem 05</div>
+    <div>Page 1 of 2</div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <div>
+    <div class="header">
+      <div class="course-tag">Evaluation 2 Technical Defense &bull; Telemetry & Empirical Proof</div>
+      <div class="doc-title">Mathematical Resource Accounting & Empirical Verification</div>
+    </div>
+
+    <h2>4. Baseline Cluster State & Precise Mathematical Resource Proof</h2>
+    <p>The <strong>Baseline</strong> represents the verified, saturated cluster utilization. Preemption cannot be proven on an empty node because preemption is strictly triggered when node resource capacity is exceeded.</p>
+    <div class="callout">
+      <strong>Target Node Baseline Accounting (Node: <code>kind-worker</code>):</strong><br>
+      Total Allocatable CPU: <strong>16,000m</strong> (16 cores). System Daemon Reserve: <strong>100m</strong>.<br>
+      Baseline Deployed Workloads: 1 &times; Medium Pod (<strong>1,590m</strong>) + 3 &times; Low Pods (<strong>3 &times; 3,975m = 11,925m</strong>).
+    </div>
+    <div class="math-box">
+Committed Requests = 100m (sys) + 1,590m (med) + 11,925m (3x low) = 13,615m
+Residual Free CPU Available for Scheduling = 16,000m - 13,615m = 2,385m
+    </div>
+    <p>To prove priority governs scheduling, two identical workloads (<strong>4,373m CPU</strong>) were tested against this <strong>2,385m residual headroom</strong> (Deficit = <strong>1,988m</strong>):</p>
+    <div class="grid-2">
+      <div class="callout" style="border-left: 2.5px solid #dc2626;">
+        <div class="callout-title" style="color: #b91c1c;">Case A: Equal-Priority Probe (Low: 10,000)</div>
+        <p style="margin: 0;"><strong>Request:</strong> 4,373m &bull; <strong>Deficit:</strong> 1,988m.<br>
+        <strong>Evaluation:</strong> Existing node pods are Medium (50k) and Low (10k). Kubernetes rules strictly forbid preempting equal or higher priority pods.<br>
+        <strong>Result:</strong> Remained <strong><code>Pending</code></strong> continuously. Logged <code>FailedScheduling: Insufficient cpu</code>. Zero victims terminated.</p>
+      </div>
+      <div class="callout" style="border-left: 2.5px solid #16a34a;">
+        <div class="callout-title" style="color: #15803d;">Case B: High-Priority Arrival (High: 100,000)</div>
+        <p style="margin: 0;"><strong>Request:</strong> 4,373m &bull; <strong>Deficit:</strong> 1,988m.<br>
+        <strong>Evaluation:</strong> High priority (100k) exceeds low pods (10k). Evicting <em>one</em> low pod frees 3,975m.<br>
+        <strong>Post-Eviction Headroom:</strong> 2,385m + 3,975m = <strong>6,360m &ge; 4,373m</strong>.<br>
+        <strong>Result:</strong> Native <code>Preempted</code> event fired. Low pod terminated. High pod placed to <strong><code>Running</code></strong>. Medium pod preserved. Final Free CPU: <strong>1,987m</strong>.</p>
+      </div>
+    </div>
+
+    <h2>5. Experimental Telemetry & Verification Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Experiment</th>
+          <th>Scenario / Action</th>
+          <th>Observed Kubernetes API Telemetry</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Exp 1: Normal Placement</strong></td>
+          <td>12 pods (4 High, 4 Med, 4 Low) across 2 workers without exhaustion.</td>
+          <td>All 12 pods reached <code>Running</code> status evenly split across workers (6/node). Proved PriorityClasses do not impede placement when resources exist.</td>
+          <td><span class="badge badge-pass">PASS (12/12)</span></td>
+        </tr>
+        <tr>
+          <td><strong>Exp 2: Queue Ordering</strong></td>
+          <td>Worker blocked; Low created first, High second. Blocker removed.</td>
+          <td>Scheduler picked <strong>High contestant first</strong> (Timestamp: 04:22:15) while Low stayed <code>Pending</code>. Direct empirical proof of Priority Heap Queue over FIFO.</td>
+          <td><span class="badge badge-pass">PASS (Order)</span></td>
+        </tr>
+        <tr>
+          <td><strong>Exp 3: Controlled Preempt</strong></td>
+          <td>Saturated baseline; tested Equal Probe vs. High Arrival.</td>
+          <td>Equal probe rejected (<code>Insufficient cpu</code>). High pod triggered native eviction of <code>data-crawler-job-1</code>. High pod placed; Medium preserved.</td>
+          <td><span class="badge badge-pass">PASS (Preempt)</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Faculty Defense / Viva Examination Q&A Cheat-Sheet</h2>
+    <div class="callout-dark">
+      <strong>Q1: "Did you write custom scheduling algorithms or priority queues in Python/Flask?"</strong><br>
+      <strong>Answer:</strong> <em>No. Flask is strictly an out-of-band monitoring dashboard and script runner. 100% of scheduling logic, heap sorting, node filtering, scoring, and preemption cycles are executed natively by the compiled Go binary <code>kube-scheduler</code> in the control-plane container.</em>
+    </div>
+    <div class="callout-dark">
+      <strong>Q2: "Why do your containers run <code>sleep</code> commands instead of real processing workloads?"</strong><br>
+      <strong>Answer:</strong> <em>Kubernetes scheduling decisions are computed against <strong>Declared Resource Requests (<code>spec.containers.resources.requests</code>)</strong> admitted into <code>etcd</code>, NOT runtime CPU spikes. Using lightweight containers allows us to demonstrate massive enterprise multi-core resource scheduling cleanly on a laptop without thermal throttling.</em>
+    </div>
+    <div class="callout-dark">
+      <strong>Q3: "Why did the high-priority pod preempt a low-priority pod and NOT the medium-priority pod?"</strong><br>
+      <strong>Answer:</strong> <em>The native <code>kube-scheduler</code> preemption algorithm implements victim minimization: it seeks to evict the lowest possible priority tier first, and the minimum number of pods necessary to satisfy the deficit. Evicting one low-priority pod (3,975m) satisfied the 1,988m deficit completely, leaving the higher-priority medium pod untouched.</em>
+    </div>
+    <div class="callout-dark">
+      <strong>Q4: "What happens if two pods have the exact same PriorityClass value?"</strong><br>
+      <strong>Answer:</strong> <em>Within <code>activeQ</code>, if two pods share identical priority values, the scheduler breaks ties using <code>creationTimestamp</code> (FIFO ordering). If priority values differ, priority strictly supersedes creation time.</em>
+    </div>
+    <div style="margin-top: 3px; text-align: center; font-size: 6.8pt; color: #475569;">
+      <strong>Live Cluster Verification Command:</strong> <code>kubectl get events -n priority-scheduling --sort-by=.metadata.creationTimestamp</code>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Cloud Computing Lab &bull; Technical Evaluation Report &bull; Problem 05</div>
+    <div>Page 2 of 2</div>
+  </div>
+</div>
+
+</body>
+</html>
