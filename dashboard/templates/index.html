@@ -13,14 +13,6 @@
 </head>
 <body class="neobrutal-body">
 
-    <!-- Electric Yellow Ticker Tape Marquee -->
-    <div class="marquee-strip">
-        <div class="marquee-track">
-            <span>◆ KUBEPRIORITY CONTROL PLANE // THREE-NODE KIND LAB ◆ PRIORITY-BASED SCHEDULING &amp; PREEMPTION ENGINE ◆ DOCKER RUNTIME ◆ HIGH: 100K | MED: 50K | LOW: 10K ◆ NODE RESOURCE REQUESTS ◆ CAPSTONE ENGINEERING PROJECT ◆ SCHEDULING EVENTS ◆</span>
-            <span>◆ KUBEPRIORITY CONTROL PLANE // THREE-NODE KIND LAB ◆ PRIORITY-BASED SCHEDULING &amp; PREEMPTION ENGINE ◆ DOCKER RUNTIME ◆ HIGH: 100K | MED: 50K | LOW: 10K ◆ NODE RESOURCE REQUESTS ◆ CAPSTONE ENGINEERING PROJECT ◆ SCHEDULING EVENTS ◆</span>
-        </div>
-    </div>
-
     <!-- Top Navigation Bar -->
     <header class="top-nav">
         <div class="nav-brand">
@@ -33,9 +25,8 @@
             </div>
             <div class="brand-text">
                 <h1 class="brand-title">KUBE-PRIORITY</h1>
-                <span class="brand-sub">POD SCHEDULER &amp; PREEMPTION ENGINE</span>
+                <span class="brand-sub">CONTROL PLANE &amp; SCHEDULER</span>
             </div>
-            <div class="stamp-badge stamp-cyan">OFFICIAL K8S API</div>
         </div>
 
         <div class="nav-right">
@@ -44,7 +35,6 @@
                 <span class="cluster-status-text" id="clusterStatusText">CLUSTER: CONNECTING...</span>
                 <span class="cluster-node-text" id="clusterNodeInfo">KIND CONTEXT: CHECKING</span>
             </div>
-            <div class="stamp-badge stamp-purple">WINDOWS 11 // KIND</div>
         </div>
     </header>
 
@@ -55,8 +45,7 @@
         <section class="nb-panel hw-banner">
             <div class="panel-header-brutal">
                 <div class="title-with-tag">
-                    <span class="section-tag-stamp stamp-mint">HARDWARE TELEMETRY</span>
-                    <h2>NODE RESOURCES &amp; PRIORITY CLASSES</h2>
+                    <h2>CLUSTER TELEMETRY &amp; RESOURCES</h2>
                 </div>
                 <div class="hardware-meta-tags">
                     <span class="tag-meta tag-node" id="hwNodeBadge">NODES: CHECKING</span>
@@ -293,9 +282,7 @@
         <section class="nb-panel">
             <div class="panel-header-brutal">
                 <div class="title-with-tag">
-                    <span class="section-tag-stamp stamp-purple">TOPOLOGY</span>
-                    <h2>LIVE MICROSERVICE WORKLOAD MATRIX</h2>
-                    <p class="panel-subtitle">Visual cards representing pods actively scheduled by the Kubernetes Priority Queue</p>
+                    <h2>WORKLOAD MATRIX</h2>
                 </div>
                 <div class="filter-toolbar">
                     <button class="filter-tab active" onclick="setFilter('all', this)">ALL PODS</button>
@@ -320,10 +307,8 @@
             <div class="nb-panel chart-panel">
                 <div class="panel-header-brutal small">
                     <div class="title-with-tag">
-                        <span class="section-tag-stamp stamp-cyan">QUEUE BREAKDOWN</span>
-                        <h3>PRIORITY CLASS DISTRIBUTION</h3>
+                        <h3>PRIORITY DISTRIBUTION</h3>
                     </div>
-                    <span class="chart-badge badge-donut">DONUT RATIO</span>
                 </div>
                 <div class="chart-wrapper">
                     <canvas id="priorityChart"></canvas>
@@ -333,10 +318,8 @@
             <div class="nb-panel chart-panel">
                 <div class="panel-header-brutal small">
                     <div class="title-with-tag">
-                        <span class="section-tag-stamp stamp-orange">LATENCY BENCHMARK</span>
-                        <h3>POD SCHEDULING LATENCY (SECONDS)</h3>
+                        <h3>SCHEDULING LATENCY (s)</h3>
                     </div>
-                    <span class="chart-badge badge-bar">TIME TO PLACE</span>
                 </div>
                 <div class="chart-wrapper">
                     <canvas id="latencyChart"></canvas>
@@ -352,7 +335,7 @@
                     <span class="t-dot t-yellow"></span>
                     <span class="t-dot t-green"></span>
                 </div>
-                <span class="terminal-label">POWERSHELL &amp; KUBERNETES EXECUTION LOG</span>
+                <span class="terminal-label">LOG OUTPUT</span>
                 <button class="btn-terminal-clear" onclick="clearConsole()">CLEAR CONSOLE</button>
             </div>
             <pre class="terminal-code-body" id="consoleOutput">Select an experiment to see its PowerShell output.</pre>
@@ -362,15 +345,13 @@
         <section class="nb-panel">
             <div class="panel-header-brutal">
                 <div class="title-with-tag">
-                    <span class="section-tag-stamp stamp-mint">TELEMETRY TABLE</span>
-                    <h2>DETAILED MICROSERVICE POD AUDIT SPECIFICATION</h2>
-                    <p class="panel-subtitle">Pod requests, priorities, node assignments, and placement times</p>
+                    <h2>POD TELEMETRY</h2>
                 </div>
                 <div class="refresh-toggle-box">
                     <label class="checkbox-container">
                         <input type="checkbox" id="chkAutoRefresh" checked onchange="toggleAutoRefresh(this.checked)">
                         <span class="checkmark"></span>
-                        <span class="label-txt">AUTO-POLL API (4s)</span>
+                        <span class="label-txt">AUTO-POLL (4s)</span>
                     </label>
                 </div>
             </div>
@@ -409,9 +390,7 @@
         <section class="nb-panel">
             <div class="panel-header-brutal">
                 <div class="title-with-tag">
-                    <span class="section-tag-stamp stamp-pink">K8S AUDIT TRAIL</span>
-                    <h2>NATIVE KUBE-SCHEDULER &amp; PREEMPTION EVENTS</h2>
-                    <p class="panel-subtitle">Namespace-wide Kubernetes API log. For run-specific evidence, use the Experiment 3 Audit above. Command: <code>kubectl get events -n priority-scheduling</code></p>
+                    <h2>SCHEDULER EVENTS</h2>
                 </div>
             </div>
 
@@ -441,11 +420,11 @@
     <footer class="nb-footer">
         <div class="footer-inner">
             <div class="footer-brand">
-                <span class="f-badge">K8S-PRIORITY // VIBRANT</span>
-                <span>PRIORITY-BASED POD SCHEDULING IN KUBERNETES</span>
+                <span class="f-badge">K8S-PRIORITY</span>
+                <span>PRIORITY-BASED SCHEDULING</span>
             </div>
             <div class="footer-meta">
-                <span>ACADEMIC PROJECT DEMONSTRATION &bull; WINDOWS 11 &amp; KIND &bull; VIBRANT NEOBRUTALISM</span>
+                <span>THREE-NODE KIND CLUSTER &bull; KUBERNETES CONTROL PLANE</span>
             </div>
         </div>
     </footer>
