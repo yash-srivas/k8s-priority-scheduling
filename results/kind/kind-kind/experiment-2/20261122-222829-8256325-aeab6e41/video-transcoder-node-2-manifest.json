@@ -1,0 +1,44 @@
+{
+    "apiVersion":  "v1",
+    "kind":  "Pod",
+    "metadata":  {
+                     "labels":  {
+                                    "lab-stage":  "prepare",
+                                    "tier":  "low",
+                                    "lab-run":  "20261122-222829-8256325-aeab6e41",
+                                    "role":  "victim",
+                                    "experiment":  "experiment-2",
+                                    "app.kubernetes.io/managed-by":  "priority-scheduling-lab"
+                                },
+                     "name":  "video-transcoder-node-2",
+                     "namespace":  "priority-scheduling"
+                 },
+    "spec":  {
+                 "priorityClassName":  "low-priority",
+                 "nodeSelector":  {
+                                      "kubernetes.io/hostname":  "kind-worker2"
+                                  },
+                 "restartPolicy":  "Never",
+                 "containers":  [
+                                    {
+                                        "command":  [
+                                                        "sleep",
+                                                        "7200"
+                                                    ],
+                                        "name":  "workload",
+                                        "resources":  {
+                                                          "limits":  {
+                                                                         "cpu":  "2962m",
+                                                                         "memory":  "96Mi"
+                                                                     },
+                                                          "requests":  {
+                                                                           "cpu":  "2962m",
+                                                                           "memory":  "32Mi"
+                                                                       }
+                                                      },
+                                        "image":  "busybox:1.36"
+                                    }
+                                ],
+                 "terminationGracePeriodSeconds":  5
+             }
+}

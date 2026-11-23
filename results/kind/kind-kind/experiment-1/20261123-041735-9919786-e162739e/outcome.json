@@ -1,0 +1,11 @@
+﻿{
+    "experiment":  "experiment-1",
+    "context":  "kind-kind",
+    "status":  "PASS",
+    "message":  "All 12 Pods have the expected priorities and are Running on workers. This demonstrates multi-tier priority configuration and scheduling.",
+    "recorded_at":  "2026-11-23T04:19:17.4098073Z",
+    "details":  {
+                    "expected":  12,
+                    "observed":  12
+                }
+}

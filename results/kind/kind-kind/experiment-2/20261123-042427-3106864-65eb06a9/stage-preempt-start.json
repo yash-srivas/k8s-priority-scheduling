@@ -1,0 +1,96 @@
+{
+    "stage":  "Preempt",
+    "run_id":  "20261123-042427-3106864-65eb06a9",
+    "started_at":  "2026-11-23T04:26:04.5686778Z",
+    "finished_at":  "2026-11-23T04:26:11.8234498Z",
+    "evidence":  {
+                     "workers":  [
+                                     {
+                                         "node":  "kind-worker",
+                                         "hostname":  "kind-worker",
+                                         "medium":  "customer-portal-api",
+                                         "low":  [
+                                                     "batch-analytics-worker-1",
+                                                     "video-transcoder-node-1",
+                                                     "data-crawler-job-1"
+                                                 ],
+                                         "high":  "emergency-payment-surge",
+                                         "cpuAllocatableMilli":  8000,
+                                         "memoryAllocatableBytes":  3749351424,
+                                         "initialRequestedCpuMilli":  100,
+                                         "initialRequestedMemoryBytes":  52428800,
+                                         "mediumCpuMilli":  790,
+                                         "lowCpuMilli":  1975,
+                                         "freeCpuBeforeHighMilli":  1185,
+                                         "freeMemoryBeforeHighBytes":  3562704896,
+                                         "highCpuMilli":  2173,
+                                         "before":  {
+                                                        "node":  "kind-worker",
+                                                        "allocatableCpuMilli":  8000,
+                                                        "requestedCpuMilli":  6815,
+                                                        "freeCpuMilli":  1185,
+                                                        "allocatableMemoryBytes":  3749351424,
+                                                        "requestedMemoryBytes":  186646528,
+                                                        "freeMemoryBytes":  3562704896,
+                                                        "freePodSlots":  104
+                                                    },
+                                         "after":  null,
+                                         "baselineAllocations":  [
+                                                                     "1fc02db3-8388-4817-93ec-761c1a7a2573/1.975/33554432",
+                                                                     "2ac4949f-a6a3-484d-88e8-62cac7ec5b0e/0.100/52428800",
+                                                                     "572ff43e-f3bf-47b7-b05b-fcaf3c0b559c/0/0",
+                                                                     "970d0ebc-a981-4aaa-b06f-e0b6bcf30b85/1.975/33554432",
+                                                                     "da8e78b4-7bff-42cc-a518-342aa3c71469/1.975/33554432",
+                                                                     "dfdd7175-23d4-45f2-9305-89978e5ad5b2/0.790/33554432"
+                                                                 ],
+                                         "releasedVictims":  [
+
+                                                             ],
+                                         "requestedCpuAfterMilli":  null,
+                                         "freeCpuAfterMilli":  null
+                                     },
+                                     {
+                                         "node":  "kind-worker2",
+                                         "hostname":  "kind-worker2",
+                                         "medium":  "inventory-query-service",
+                                         "low":  [
+                                                     "batch-analytics-worker-2",
+                                                     "video-transcoder-node-2"
+                                                 ],
+                                         "high":  "critical-order-surge",
+                                         "cpuAllocatableMilli":  8000,
+                                         "memoryAllocatableBytes":  3749351424,
+                                         "initialRequestedCpuMilli":  100,
+                                         "initialRequestedMemoryBytes":  52428800,
+                                         "mediumCpuMilli":  790,
+                                         "lowCpuMilli":  2962,
+                                         "freeCpuBeforeHighMilli":  1186,
+                                         "freeMemoryBeforeHighBytes":  3596259328,
+                                         "highCpuMilli":  2667,
+                                         "before":  {
+                                                        "node":  "kind-worker2",
+                                                        "allocatableCpuMilli":  8000,
+                                                        "requestedCpuMilli":  6814,
+                                                        "freeCpuMilli":  1186,
+                                                        "allocatableMemoryBytes":  3749351424,
+                                                        "requestedMemoryBytes":  153092096,
+                                                        "freeMemoryBytes":  3596259328,
+                                                        "freePodSlots":  105
+                                                    },
+                                         "after":  null,
+                                         "baselineAllocations":  [
+                                                                     "3f50daf6-7499-4612-afd5-9a914e1b6558/2.962/33554432",
+                                                                     "8c753135-2aa2-4720-aec0-c0196187aa38/0.790/33554432",
+                                                                     "92276c73-ee0c-4cd4-97a0-45eec7d679e7/2.962/33554432",
+                                                                     "c476f9a3-877e-4fbb-ab66-0202e7db6722/0.100/52428800",
+                                                                     "f72196b8-5746-4317-9bcc-6535388b3006/0/0"
+                                                                 ],
+                                         "releasedVictims":  [
+
+                                                             ],
+                                         "requestedCpuAfterMilli":  null,
+                                         "freeCpuAfterMilli":  null
+                                     }
+                                 ]
+                 }
+}

@@ -1,0 +1,123 @@
+[
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "High-priority class for mission-critical Kubernetes workloads that can preempt lower priority workloads.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"High-priority class for mission-critical Kubernetes workloads that can preempt lower priority workloads.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"name\":\"high-priority\"},\"preemptionPolicy\":\"PreemptLowerPriority\",\"value\":100000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-22T22:17:42Z",
+                         "generation":  1,
+                         "name":  "high-priority",
+                         "resourceVersion":  "695",
+                         "uid":  "cb29c2ec-304f-4d07-889c-cbaf259e99a8"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  100000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Low-priority class for batch, background, or non-critical workloads that can be preempted.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"Low-priority class for batch, background, or non-critical workloads that can be preempted.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"name\":\"low-priority\"},\"preemptionPolicy\":\"PreemptLowerPriority\",\"value\":10000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-22T22:17:42Z",
+                         "generation":  1,
+                         "name":  "low-priority",
+                         "resourceVersion":  "697",
+                         "uid":  "9ee2c5b2-ecc0-4ab9-ac00-8154bd1d41f3"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  10000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Medium-priority class for regular production workloads.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"Medium-priority class for regular production workloads.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"name\":\"medium-priority\"},\"preemptionPolicy\":\"PreemptLowerPriority\",\"value\":50000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-22T22:17:42Z",
+                         "generation":  1,
+                         "name":  "medium-priority",
+                         "resourceVersion":  "696",
+                         "uid":  "7634fc2f-6fe3-4170-9b32-5a9bb722aab8"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  50000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "High-priority contestant for the scheduling-order demonstration.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"High-priority contestant for the scheduling-order demonstration.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/managed-by\":\"priority-scheduling-lab\",\"experiment\":\"scheduling-order\"},\"name\":\"order-high-priority\"},\"preemptionPolicy\":\"Never\",\"value\":100000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-23T04:22:10Z",
+                         "generation":  1,
+                         "labels":  {
+                                        "app.kubernetes.io/managed-by":  "priority-scheduling-lab",
+                                        "experiment":  "scheduling-order"
+                                    },
+                         "name":  "order-high-priority",
+                         "resourceVersion":  "33188",
+                         "uid":  "2be7808a-f097-4c7b-89b0-dcec9c53b43b"
+                     },
+        "preemptionPolicy":  "Never",
+        "value":  100000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Low-priority contestant for the scheduling-order demonstration.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "annotations":  {
+                                             "kubectl.kubernetes.io/last-applied-configuration":  "{\"apiVersion\":\"scheduling.k8s.io/v1\",\"description\":\"Low-priority contestant for the scheduling-order demonstration.\",\"globalDefault\":false,\"kind\":\"PriorityClass\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/managed-by\":\"priority-scheduling-lab\",\"experiment\":\"scheduling-order\"},\"name\":\"order-low-priority\"},\"preemptionPolicy\":\"Never\",\"value\":10000}\n"
+                                         },
+                         "creationTimestamp":  "2026-11-23T04:22:10Z",
+                         "generation":  1,
+                         "labels":  {
+                                        "app.kubernetes.io/managed-by":  "priority-scheduling-lab",
+                                        "experiment":  "scheduling-order"
+                                    },
+                         "name":  "order-low-priority",
+                         "resourceVersion":  "33189",
+                         "uid":  "f02bfd0d-7286-49a5-aefc-0acf8864d0c3"
+                     },
+        "preemptionPolicy":  "Never",
+        "value":  10000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Used for system critical pods that must run in the cluster, but can be moved to another node if necessary.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T22:16:24Z",
+                         "generation":  1,
+                         "name":  "system-cluster-critical",
+                         "resourceVersion":  "46",
+                         "uid":  "80da8c3e-9348-4aea-9516-b0862d8cc5a3"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  2000000000
+    },
+    {
+        "apiVersion":  "scheduling.k8s.io/v1",
+        "description":  "Used for system critical pods that must not be moved from their current node.",
+        "kind":  "PriorityClass",
+        "metadata":  {
+                         "creationTimestamp":  "2026-11-22T22:16:24Z",
+                         "generation":  1,
+                         "name":  "system-node-critical",
+                         "resourceVersion":  "44",
+                         "uid":  "07825751-6181-4d82-9985-87bdcb6b8893"
+                     },
+        "preemptionPolicy":  "PreemptLowerPriority",
+        "value":  2000001000
+    }
+]
