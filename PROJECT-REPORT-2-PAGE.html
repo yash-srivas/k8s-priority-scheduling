@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Report - Priority-Based Pod Scheduling in Kubernetes</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    color: #111827;
+    margin: 0;
+    padding: 0;
+    font-size: 8pt;
+    line-height: 1.32;
+  }
+  
+  .page {
+    width: 100%;
+    height: 277mm;
+    max-height: 277mm;
+    position: relative;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  /* Academic Header */
+  .report-header {
+    text-align: center;
+    border-bottom: 1.5px solid #111827;
+    padding-bottom: 5px;
+    margin-bottom: 6px;
+  }
+  .institution-name {
+    font-size: 11pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .course-info {
+    font-size: 8pt;
+    color: #374151;
+    font-style: italic;
+    margin-bottom: 3px;
+  }
+  .report-title {
+    font-size: 13pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #000000;
+    margin: 3px 0 3px 0;
+  }
+  .author-block {
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.8pt;
+    border-top: 0.5px solid #9ca3af;
+    padding-top: 3px;
+    margin-top: 3px;
+  }
+
+  /* Headings */
+  h2 {
+    font-size: 8.8pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #000000;
+    margin: 5px 0 2px 0;
+    border-bottom: 0.5px solid #4b5563;
+    padding-bottom: 1px;
+    letter-spacing: 0.3px;
+  }
+  h3 {
+    font-size: 8pt;
+    font-weight: bold;
+    margin: 3px 0 1px 0;
+    color: #1f2937;
+  }
+  p {
+    margin: 0 0 3px 0;
+    text-align: justify;
+    text-indent: 10px;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+
+  /* Two column academic layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3px 0 4px 0;
+    font-size: 7.2pt;
+  }
+  th {
+    background: #f3f4f6;
+    color: #000000;
+    font-weight: bold;
+    text-align: left;
+    padding: 2.5px 4px;
+    border: 0.5px solid #4b5563;
+  }
+  td {
+    padding: 2.5px 4px;
+    border: 0.5px solid #9ca3af;
+    vertical-align: top;
+  }
+
+  /* Boxes & Diagrams */
+  .box-container {
+    background: #f9fafb;
+    border: 0.5px solid #9ca3af;
+    border-radius: 2px;
+    padding: 3px 5px;
+    margin: 3px 0;
+    font-size: 7.2pt;
+  }
+  .math-display {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 7pt;
+    text-align: center;
+    background: #f3f4f6;
+    border: 0.5px dashed #6b7280;
+    padding: 2.5px;
+    margin: 2px 0;
+  }
+  .code-block {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 6.4pt;
+    line-height: 1.18;
+    background: #f3f4f6;
+    border: 0.5px solid #9ca3af;
+    padding: 3px;
+    margin: 2px 0;
+    white-space: pre;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 0.5px solid #4b5563;
+    padding-top: 2px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 6.8pt;
+    color: #4b5563;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div>
+    <div class="report-header">
+      <div class="institution-name">Department of Computer Science and Engineering</div>
+      <div class="course-info">Cloud Computing Laboratory &bull; Course Project Evaluation Report</div>
+      <div class="report-title">Priority-Based Pod Scheduling and Preemption in Kubernetes</div>
+      <div class="author-block">
+        <div><strong>Problem Statement:</strong> 05 (Cloud Computing Lab)</div>
+        <div><strong>Environment:</strong> Multi-Node Kubernetes (kind v0.33.0 / v1.31)</div>
+        <div><strong>Date:</strong> November 2026</div>
+      </div>
+    </div>
+
+    <h2>1. Abstract</h2>
+    <p>
+      In distributed multi-tenant container orchestration platforms, hardware resources (compute cores and memory) are finite. When aggregate workload demands exceed physical cluster capacity, the orchestrator requires deterministic policies to govern scheduling precedence. This project investigates and demonstrates priority-based workload scheduling and preemption mechanisms using native Kubernetes architectural primitives. A multi-node cluster comprising one control plane and two worker nodes was established using <code>kind</code>. Workloads assigned varying PriorityClass specifications (high, medium, and low) were deployed under controlled resource saturation. The empirical evaluation demonstrates: (i) deterministic priority-queue sorting over First-In-First-Out (FIFO) submission order, (ii) reproducible <code>Pending</code> states due to resource constraints, and (iii) automated victim selection and graceful eviction via the native <code>kube-scheduler</code> preemption cycle.
+    </p>
+
+    <h2>2. Problem Definition & Objectives</h2>
+    <p>
+      Standard First-Come-First-Served (FCFS) pod scheduling is inadequate in mission-critical production environments where transactional workflows (e.g., checkout and payment services) must take precedence over asynchronous batch tasks (e.g., analytics and log processing). The objective of this project is to:
+    </p>
+    <ul style="margin: 1px 0 3px 14px; padding: 0; font-size: 7.6pt;">
+      <li>Define multiple declarative <code>PriorityClass</code> objects in the Kubernetes cluster.</li>
+      <li>Deploy heterogeneous workloads with specified CPU resource requests mapped to distinct priority classes.</li>
+      <li>Analyze scheduling behavior under constrained cluster resource capacity.</li>
+      <li>Empirically capture and evaluate pod scheduling order, pending pod failure conditions, and native preemption events.</li>
+    </ul>
+
+    <h2>3. System Architecture & Methodology</h2>
+    <p>
+      The system is deployed on an isolated multi-node topology running within WSL 2 / containerd. The architectural workflow follows standard Kubernetes declarative specifications:
+    </p>
+
+    <div class="two-col">
+      <div>
+        <h3>3.1 Cluster Node Configuration</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Node Name</th>
+              <th>Role</th>
+              <th>Allocatable CPU</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>kind-control-plane</code></td>
+              <td>API Server, Scheduler, etcd</td>
+              <td>System Reserved (Tainted)</td>
+            </tr>
+            <tr>
+              <td><code>kind-worker</code></td>
+              <td>Compute Worker Node 1</td>
+              <td>16,000m (16 Cores)</td>
+            </tr>
+            <tr>
+              <td><code>kind-worker2</code></td>
+              <td>Compute Worker Node 2</td>
+              <td>16,000m (16 Cores)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>3.2 Workload Priority Specifications</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Priority Class</th>
+              <th>Value</th>
+              <th>Preemption Policy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>high-priority</code></td>
+              <td>100,000</td>
+              <td><code>PreemptLowerPriority</code></td>
+            </tr>
+            <tr>
+              <td><code>medium-priority</code></td>
+              <td>50,000</td>
+              <td><code>PreemptLowerPriority</code></td>
+            </tr>
+            <tr>
+              <td><code>low-priority</code></td>
+              <td>10,000</td>
+              <td><code>PreemptLowerPriority</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2>4. Theoretical Foundations: Internal Scheduler Mechanics</h2>
+    <p>
+      The Kubernetes scheduling engine (<strong><code>kube-scheduler</code></strong>) executes placement decisions through two interconnected internal structures and two operational cycles:
+    </p>
+
+    <div class="code-block">
+Workload Submitted &rarr; API Admission &rarr; Active Queue (activeQ: Binary Max-Heap by Priority Value)
+                                              &darr; (Pop Highest Priority Pod)
+1. SCHEDULING CYCLE: [Filter Phase] (Check Node Allocatable >= Requests)
+                     &rarr; If Node Available: [Score Phase] &rarr; [Reserve & Permit] &rarr; [Bind to Worker Node]
+                     &rarr; If Insufficient CPU: [Enter Preemption Cycle]
+2. PREEMPTION CYCLE: a. Identify feasible nodes where evicting lower-priority pods frees required CPU
+                     b. Select victim set minimizing victim count and priority tier (Preserve medium, evict low)
+                     c. Annotate nominatedNodeName &rarr; Issue SIGTERM eviction &rarr; Bind high-priority Pod
+    </div>
+
+    <div class="box-container">
+      <strong>PriorityClass vs. Quality of Service (QoS):</strong>
+      PriorityClass dictates <em>admission and scheduling precedence</em> by <code>kube-scheduler</code> based on declared resource requests. Conversely, QoS Class (<code>Guaranteed</code>, <code>Burstable</code>, <code>BestEffort</code>) governs <em>host OS memory eviction</em> by the Linux kernel Out-Of-Memory (OOM) killer via <code>oom_score_adj</code> when node RAM is physically exhausted.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Project Report &bull; Priority-Based Pod Scheduling in Kubernetes</div>
+    <div>Page 1 of 2</div>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <div>
+    <div class="report-header">
+      <div class="institution-name">Experimental Analysis & Empirical Results</div>
+      <div class="course-info">Cloud Computing Laboratory Evaluation &bull; Performance & Telemetry Validation</div>
+    </div>
+
+    <h2>5. Baseline Resource Budget & Mathematical Proof</h2>
+    <p>
+      In container scheduling, preemption can only be verified when cluster nodes reach resource saturation. A controlled <strong>Baseline</strong> was established on the target worker node (<code>kind-worker</code>, Total Allocatable: 16,000m CPU):
+    </p>
+
+    <div class="box-container">
+      <strong>Baseline Workload Allocation:</strong><br>
+      System Overhead = <strong>100m</strong> &bull; Medium Workload = <strong>1,590m</strong> &bull; Low Workloads = 3 &times; 3,975m = <strong>11,925m</strong>
+    </div>
+
+    <div class="math-display">
+Total Committed Requests = 100m + 1,590m + 11,925m = 13,615m
+Residual Free CPU Available for Scheduling = 16,000m - 13,615m = 2,385m
+    </div>
+
+    <p>
+      To evaluate priority-governed placement versus equal-priority rejection, two comparative workloads requiring <strong>4,373m CPU</strong> were evaluated against the <strong>2,385m residual capacity</strong> (Deficit = <strong>1,988m</strong>):
+    </p>
+
+    <div class="two-col">
+      <div class="box-container">
+        <strong>Experiment Case A: Equal-Priority Probe (Value: 10,000)</strong><br>
+        &bull; <em>Deficit:</em> 1,988m shortfall.<br>
+        &bull; <em>Rule Evaluation:</em> Existing node pods are Medium (50k) and Low (10k). Kubernetes scheduling specifications prohibit preempting workloads of equal or higher priority.<br>
+        &bull; <em>Telemetry:</em> Workload remained permanently in <code>Pending</code>. Scheduler generated: <code>FailedScheduling: 0/3 nodes available: 1 node has Insufficient cpu</code>. No workloads evicted.
+      </div>
+      <div class="box-container">
+        <strong>Experiment Case B: High-Priority Arrival (Value: 100,000)</strong><br>
+        &bull; <em>Deficit:</em> 1,988m shortfall.<br>
+        &bull; <em>Rule Evaluation:</em> High-priority exceeds low-priority pods. Evicting <em>one</em> low workload frees 3,975m CPU.<br>
+        &bull; <em>Post-Eviction Capacity:</em> 2,385m + 3,975m = <strong>6,360m &ge; 4,373m</strong>.<br>
+        &bull; <em>Telemetry:</em> Native <code>Preempted</code> event emitted. Low pod evicted gracefully. High pod transitioned to <code>Running</code>. Medium pod preserved. Final Free CPU = <strong>1,987m</strong>.
+      </div>
+    </div>
+
+    <h2>6. Summary of Experimental Demonstrations</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Trial / Scenario</th>
+          <th>Test Configuration</th>
+          <th>Observed System Telemetry (API & Events)</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Multi-Tier Normal Placement</strong></td>
+          <td>12 pods deployed (4 High, 4 Med, 4 Low) across 2 workers without resource saturation.</td>
+          <td>All 12 pods transitioned to <code>Running</code> status with balanced node affinity (6 pods/worker). Proved PriorityClasses do not impede placement when capacity exists.</td>
+          <td>Verified (12/12 Running)</td>
+        </tr>
+        <tr>
+          <td><strong>2. Queue Priority vs. FIFO Ordering</strong></td>
+          <td>Capacity blocker deployed. Low contestant submitted first, High submitted second. Blocker deleted.</td>
+          <td>Upon capacity release, <code>kube-scheduler</code> bypassed FIFO arrival order and placed <strong>High contestant first</strong>. Low contestant remained in <code>Pending</code>.</td>
+          <td>Verified (Priority Ordering)</td>
+        </tr>
+        <tr>
+          <td><strong>3. Controlled Native Preemption</strong></td>
+          <td>Saturated baseline evaluated against Equal Probe vs. High-Priority arrival.</td>
+          <td>Equal probe was rejected with <code>Insufficient cpu</code>. High-priority workload triggered eviction of <code>data-crawler-job-1</code>. Medium workload remained unaffected.</td>
+          <td>Verified (Native Preemption)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>7. Discussion & Practical Implications</h2>
+    <p>
+      In production enterprise cloud environments (e.g., streaming platforms, financial transaction systems, and e-commerce platforms), resource priorities are governed by structured Service Level Agreements (SLAs). Critical services (Tier-0) such as payment authorization and identity verification are assigned high-priority classes with preemption enabled. Non-critical asynchronous tasks such as nightly data aggregation, web indexing, and video encoding are allocated low-priority classes. Automated policy controllers (such as OPA Gatekeeper and Kyverno) enforce priority assignments at cluster ingress, ensuring that during high-traffic surges, critical services immediately reclaim compute resources from disposable workloads without waiting for infrastructure autoscaling latency.
+    </p>
+
+    <h2>8. Conclusion</h2>
+    <p>
+      The experimental evaluation successfully validates the role of PriorityClass configurations in Kubernetes resource management. The findings confirm that <code>kube-scheduler</code> deterministically sorts unscheduled workloads via a priority heap queue, enforces resource isolation under saturation, and executes preemption while minimizing collateral workload disruption. The empirical results demonstrate exact adherence to Kubernetes scheduling specifications and provide a robust foundation for multi-tenant cloud capacity management.
+    </p>
+
+    <div style="margin-top: 4px; font-size: 6.8pt; color: #4b5563; border-top: 0.5px solid #d1d5db; padding-top: 2px;">
+      <strong>References:</strong> [1] Kubernetes Documentation: <em>Pod Priority and Preemption</em> (v1.31). [2] Kubernetes Source Code: <code>pkg/scheduler/internal/queue/scheduling_queue.go</code>. [3] Burns, B., et al. <em>Designing Distributed Systems</em>, O'Reilly Media.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Project Report &bull; Priority-Based Pod Scheduling in Kubernetes</div>
+    <div>Page 2 of 2</div>
+  </div>
+</div>
+
+</body>
+</html>
