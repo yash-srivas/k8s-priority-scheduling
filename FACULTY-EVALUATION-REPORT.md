@@ -6,7 +6,23 @@
 
 ---
 
-## 1. Executive Summary & Clarification for Faculty
+## 1. 1-to-1 Mapping: Official Problem Statement vs. Our Implementation
+
+Here is the exact line-by-line verification proving that our project directly implements every single phrase in the official Problem Statement:
+
+| Official Problem Statement Line | How Our Implementation Satisfies It | Exact File & Evidence Source |
+| :--- | :--- | :--- |
+| **"Configure multiple priority classes in Kubernetes"** | Configured 3 production-tier `PriorityClass` resources (`high-priority`: 100000, `medium-priority`: 50000, `low-priority`: 10000) using API `scheduling.k8s.io/v1`. | [`configs/priority-classes.yaml`](file:///D:/KLE/CC/k8s-priority-scheduling/configs/priority-classes.yaml) |
+| **"Deploy workloads with different priorities"** | Deployed 12 multi-tier microservices across two worker nodes, each bound to a specific `PriorityClass`. | [`experiments/experiment-1.yaml`](file:///D:/KLE/CC/k8s-priority-scheduling/experiments/experiment-1.yaml) |
+| **"Demonstrate how priority influences scheduling when cluster resources are limited"** | Created a controlled CPU deficit on worker nodes to demonstrate that when capacity is insufficient, priority determines who schedules and who gets rejected. | [`scripts/run-scheduling-order.ps1`](file:///D:/KLE/CC/k8s-priority-scheduling/scripts/run-scheduling-order.ps1) & [`scripts/run-experiment-2.ps1`](file:///D:/KLE/CC/k8s-priority-scheduling/scripts/run-experiment-2.ps1) |
+| **"Demonstrate: Pod scheduling order"** | Blocked a worker node and submitted Low and High contestants. When 1 slot opened, `kube-scheduler` picked High first, proving **priority ordering over FIFO**. | Stage 2B (`Release One Slot`) in order test |
+| **"Demonstrate: Pending pods"** | Demonstrated real Kubernetes `Pending` states caused by genuine `FailedScheduling: Insufficient cpu` warnings from `kube-scheduler`. | Captured in `describe pod` & live dashboard table |
+| **"Demonstrate: Preemption events"** | Triggered native Kubernetes preemption where high-priority pod caused `kube-scheduler` to emit native `Preempted` events and evict low-priority victims. | `kubectl get events -n priority-scheduling --field-selector reason=Preempted` |
+| **"Demonstrate: Effect of priority values"** | Matched Equal-Probe comparison: Low-priority probe with identical CPU remains `Pending` forever, while High-priority pod ($100000$) succeeds via preemption. | Stage 3B vs 3C in Experiment 2 |
+
+---
+
+## 2. Executive Summary & Clarification for Faculty
 
 This demonstration uses **100% native Kubernetes scheduling primitives**. No custom, simulated, or third-party schedulers are deployed. All decisions are executed by Kubernetes' built-in component: **`kube-scheduler`**.
 
